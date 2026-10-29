@@ -1,0 +1,5086 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Laboratorio Interactivo de Cinemática 1D para Física Preuniversitaria. MRU, MRUV, Caída Libre, Gráficas, Problemas Resueltos y Quiz Evaluativo.">
+  <title>Cinemática 1D • Laboratorio Interactivo de Física Preuniversitaria</title>
+
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- KaTeX CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"></script>
+
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Inline CSS -->
+  <style>
+
+/* ==========================================================================
+   CINEMÁTICA 1D - STYLESHEET (DESIGN SYSTEM)
+   ========================================================================== */
+
+:root {
+  --bg-dark: #0a0e1a;
+  --bg-card: #0f1629;
+  --bg-secondary: #131d35;
+  --bg-hover: #1b2848;
+  --border-color: #1e2d4a;
+  --border-active: #00bcd4;
+  --text-primary: #e8eaf6;
+  --text-secondary: #8899bb;
+  --text-muted: #5c6b8a;
+  
+  /* Color Coding */
+  --cyan: #00bcd4;      /* Posición / Desplazamiento */
+  --green: #4caf50;     /* Velocidad */
+  --orange: #ff9800;    /* Aceleración */
+  --magenta: #e91e9e;   /* Curvas / Resaltados */
+  --yellow: #ffeb3b;    /* Conceptos clave / Respuestas correctas */
+  --red: #f44336;       /* Errores / Alertas */
+
+  --sidebar-w: 270px;
+  --header-h: 60px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --transition: all 0.25s ease-in-out;
+  --shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+}
+
+/* Reset & Basics */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  background-color: var(--bg-dark);
+  color: var(--text-primary);
+  line-height: 1.6;
+  min-height: 100vh;
+  display: flex;
+  overflow-x: hidden;
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-dark);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-secondary);
+}
+
+/* Typography */
+h1, h2, h3, h4, h5 {
+  color: var(--text-primary);
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+h1 { font-size: 2rem; }
+h2 { font-size: 1.6rem; margin-bottom: 0.5rem; }
+h3 { font-size: 1.25rem; margin-bottom: 0.5rem; }
+h4 { font-size: 1.1rem; }
+
+p { margin-bottom: 0.85rem; color: var(--text-secondary); }
+p strong, span strong { color: var(--text-primary); }
+
+a {
+  color: var(--cyan);
+  text-decoration: none;
+  transition: var(--transition);
+}
+a:hover {
+  text-decoration: underline;
+}
+
+/* KaTeX Responsive Container */
+.katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0.5rem 0;
+  margin: 0.6rem 0 !important;
+}
+.katex {
+  color: var(--text-primary);
+  font-size: 1.08em;
+}
+
+/* App Container */
+.app-layout {
+  display: flex;
+  width: 100%;
+  min-height: 100vh;
+}
+
+/* Mobile Header */
+.mobile-header {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--header-h);
+  background: rgba(15, 22, 41, 0.95);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--border-color);
+  padding: 0 1rem;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 1000;
+}
+.mobile-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--cyan);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.btn-menu {
+  background: none;
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  padding: 0.4rem 0.6rem;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Sidebar */
+.sidebar {
+  width: var(--sidebar-w);
+  background-color: var(--bg-card);
+  border-right: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 999;
+  overflow-y: auto;
+  transition: transform 0.3s ease;
+}
+
+.sidebar-brand {
+  padding: 1.5rem 1.25rem 1rem;
+  border-bottom: 1px solid var(--border-color);
+}
+.brand-title {
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.brand-title span {
+  color: var(--cyan);
+}
+.brand-sub {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-secondary);
+  margin-top: 0.25rem;
+}
+
+.sidebar-nav {
+  padding: 0.75rem 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex: 1;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.7rem 0.85rem;
+  color: var(--text-secondary);
+  border-radius: var(--radius-md);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
+  border: 1px solid transparent;
+}
+.nav-item:hover {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+}
+.nav-item.active {
+  background: rgba(0, 188, 212, 0.12);
+  color: var(--cyan);
+  border-color: rgba(0, 188, 212, 0.35);
+  font-weight: 600;
+}
+.nav-num {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.15rem 0.4rem;
+  border-radius: var(--radius-sm);
+  background: var(--bg-secondary);
+  color: var(--text-muted);
+}
+.nav-item.active .nav-num {
+  background: var(--cyan);
+  color: var(--bg-dark);
+}
+.nav-icon {
+  font-size: 1rem;
+  width: 1.25rem;
+  text-align: center;
+}
+
+.sidebar-footer {
+  padding: 1rem 1.25rem;
+  border-top: 1px solid var(--border-color);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.sidebar-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  z-index: 998;
+}
+
+/* Main Content Area */
+.main-wrapper {
+  margin-left: var(--sidebar-w);
+  flex: 1;
+  min-width: 0;
+  padding: 2rem;
+  max-width: 1400px;
+}
+
+/* Module Sections */
+.module-section {
+  display: none;
+  animation: fadeIn 0.3s ease-in-out;
+}
+.module-section.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Module Header */
+.module-hero {
+  background: linear-gradient(135deg, rgba(19, 29, 53, 0.8) 0%, rgba(15, 22, 41, 0.95) 100%);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 1.75rem 2rem;
+  margin-bottom: 2rem;
+  box-shadow: var(--shadow);
+  position: relative;
+  overflow: hidden;
+}
+.module-hero::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 5px;
+  height: 100%;
+  background: var(--cyan);
+}
+.module-tag {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--cyan);
+  margin-bottom: 0.5rem;
+}
+.module-title {
+  font-size: 1.85rem;
+  margin-bottom: 0.5rem;
+}
+.module-desc {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  max-width: 900px;
+  margin-bottom: 0;
+}
+
+/* Cards & Containers */
+.card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  margin-bottom: 1.75rem;
+  box-shadow: var(--shadow);
+  transition: border-color 0.2s ease;
+}
+.card:hover {
+  border-color: rgba(30, 45, 74, 1.4);
+}
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border-color);
+}
+.card-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Grid Utilities */
+.grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+}
+.grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+}
+.grid-4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+}
+
+/* Theory Cards */
+.theory-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 1.25rem;
+  position: relative;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+.theory-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(0, 188, 212, 0.4);
+}
+.theory-num {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: var(--cyan);
+  background: rgba(0, 188, 212, 0.12);
+  display: inline-block;
+  padding: 0.2rem 0.55rem;
+  border-radius: 20px;
+  margin-bottom: 0.5rem;
+}
+.theory-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: #fff;
+}
+.theory-body {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+}
+
+/* Callouts */
+.callout {
+  padding: 1rem 1.25rem;
+  border-radius: var(--radius-md);
+  background: var(--bg-secondary);
+  border-left: 4px solid var(--cyan);
+  margin: 1rem 0;
+}
+.callout-cyan { border-left-color: var(--cyan); }
+.callout-green { border-left-color: var(--green); }
+.callout-orange { border-left-color: var(--orange); }
+.callout-magenta { border-left-color: var(--magenta); }
+.callout-yellow { border-left-color: var(--yellow); }
+.callout-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.35rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.callout-body {
+  font-size: 0.86rem;
+  color: var(--text-secondary);
+  margin-bottom: 0;
+}
+
+/* Controls & Inputs */
+.controls-panel {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+.control-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+.control-row:last-child {
+  margin-bottom: 0;
+}
+
+.slider-group {
+  flex: 1;
+  min-width: 220px;
+}
+.slider-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+}
+.slider-label {
+  color: var(--text-primary);
+}
+.slider-val {
+  font-family: 'Consolas', 'Monaco', monospace;
+  font-size: 0.88rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: var(--radius-sm);
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  color: var(--cyan);
+}
+.slider-val.green { color: var(--green); }
+.slider-val.orange { color: var(--orange); }
+.slider-val.magenta { color: var(--magenta); }
+
+input[type="range"] {
+  width: 100%;
+  height: 6px;
+  background: var(--bg-dark);
+  border-radius: 3px;
+  outline: none;
+  border: 1px solid var(--border-color);
+  cursor: pointer;
+  -webkit-appearance: none;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--cyan);
+  cursor: pointer;
+  box-shadow: 0 0 8px rgba(0, 188, 212, 0.6);
+  transition: transform 0.1s ease;
+}
+input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.55rem 1.1rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: var(--transition);
+  user-select: none;
+}
+.btn-cyan {
+  background: var(--cyan);
+  color: #05101f;
+}
+.btn-cyan:hover {
+  background: #26c6da;
+  box-shadow: 0 0 12px rgba(0, 188, 212, 0.4);
+}
+.btn-green {
+  background: var(--green);
+  color: #05101f;
+}
+.btn-green:hover {
+  background: #66bb6a;
+  box-shadow: 0 0 12px rgba(76, 175, 80, 0.4);
+}
+.btn-orange {
+  background: var(--orange);
+  color: #05101f;
+}
+.btn-orange:hover {
+  background: #ffa726;
+  box-shadow: 0 0 12px rgba(255, 152, 0, 0.4);
+}
+.btn-outline {
+  background: transparent;
+  border-color: var(--border-color);
+  color: var(--text-primary);
+}
+.btn-outline:hover {
+  background: var(--bg-secondary);
+  border-color: var(--cyan);
+  color: var(--cyan);
+}
+.btn-sm {
+  padding: 0.35rem 0.75rem;
+  font-size: 0.8rem;
+}
+.btn-group {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+/* HUD & Stats Badges */
+.hud-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+.stat-pill {
+  flex: 1;
+  min-width: 120px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 0.65rem 0.9rem;
+  display: flex;
+  flex-direction: column;
+}
+.stat-label {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-secondary);
+  margin-bottom: 0.15rem;
+}
+.stat-value {
+  font-family: 'Consolas', monospace;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+.stat-pill.cyan .stat-value { color: var(--cyan); }
+.stat-pill.green .stat-value { color: var(--green); }
+.stat-pill.orange .stat-value { color: var(--orange); }
+.stat-pill.magenta .stat-value { color: var(--magenta); }
+.stat-pill.yellow .stat-value { color: var(--yellow); }
+
+/* Canvas Box */
+.canvas-container {
+  position: relative;
+  background: #060913;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  margin-bottom: 1.25rem;
+  box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.6);
+}
+canvas {
+  display: block;
+  width: 100%;
+}
+
+/* Status Banner */
+.status-banner {
+  padding: 0.65rem 1rem;
+  border-radius: var(--radius-md);
+  font-size: 0.875rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  border: 1px solid transparent;
+}
+.status-speeding {
+  background: rgba(76, 175, 80, 0.15);
+  border-color: rgba(76, 175, 80, 0.4);
+  color: #81c784;
+}
+.status-slowing {
+  background: rgba(255, 152, 0, 0.15);
+  border-color: rgba(255, 152, 0, 0.4);
+  color: #ffb74d;
+}
+.status-stopped {
+  background: rgba(233, 30, 99, 0.15);
+  border-color: rgba(233, 30, 99, 0.4);
+  color: #f48fb1;
+}
+
+/* Charts Grid */
+.charts-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-top: 1rem;
+}
+.chart-box {
+  background: #080c18;
+  border: 1px solid var(--border-color);
+  border-top: 2px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 1rem;
+  position: relative;
+  transition: border-color 0.2s;
+}
+.chart-box:hover {
+  border-color: rgba(136,153,187,0.5);
+}
+.chart-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  display: flex;
+  justify-content: space-between;
+}
+.chart-canvas-wrap {
+  position: relative;
+  height: 200px;
+  width: 100%;
+}
+
+/* Data Table */
+.table-wrap {
+  max-height: 220px;
+  overflow-y: auto;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  margin-top: 1rem;
+}
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+  text-align: center;
+}
+.data-table th {
+  position: sticky;
+  top: 0;
+  background: var(--bg-card);
+  padding: 0.5rem;
+  font-weight: 700;
+  color: var(--cyan);
+  border-bottom: 2px solid var(--border-color);
+}
+.data-table td {
+  padding: 0.4rem;
+  border-bottom: 1px solid rgba(30, 45, 74, 0.5);
+  color: var(--text-secondary);
+  font-family: 'Consolas', monospace;
+}
+.data-table tr:hover td {
+  background: rgba(0, 188, 212, 0.05);
+  color: var(--text-primary);
+}
+
+/* Step Accordions (Module VII) */
+.problem-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  margin-bottom: 1.5rem;
+  overflow: hidden;
+}
+.problem-header {
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  background: var(--bg-card);
+  transition: background 0.2s ease;
+}
+.problem-header:hover {
+  background: var(--bg-secondary);
+}
+.problem-title-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.problem-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.25rem 0.6rem;
+  border-radius: 20px;
+  text-transform: uppercase;
+}
+.badge-mru { background: rgba(0, 188, 212, 0.2); color: var(--cyan); }
+.badge-mruv { background: rgba(255, 152, 0, 0.2); color: var(--orange); }
+.badge-freefall { background: rgba(233, 30, 99, 0.2); color: var(--magenta); }
+
+.solution-panel {
+  display: none;
+  padding: 1.5rem;
+  background: var(--bg-secondary);
+  border-top: 1px solid var(--border-color);
+  animation: fadeIn 0.3s ease;
+}
+.solution-panel.open {
+  display: block;
+}
+.step-item {
+  margin-bottom: 1.25rem;
+  padding-left: 1rem;
+  border-left: 2px solid var(--cyan);
+}
+.step-label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--cyan);
+  margin-bottom: 0.25rem;
+}
+.step-body {
+  font-size: 0.92rem;
+  color: var(--text-primary);
+}
+
+/* Misconception Cards (Module VIII) */
+.miscon-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+  transition: border-color 0.3s ease;
+}
+.miscon-card.correct {
+  border-color: var(--green);
+  background: rgba(76, 175, 80, 0.05);
+}
+.miscon-card.incorrect {
+  border-color: var(--red);
+  background: rgba(244, 67, 54, 0.05);
+}
+.miscon-text {
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: #fff;
+}
+.miscon-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+.miscon-btn {
+  flex: 1;
+  padding: 0.5rem;
+  font-size: 0.88rem;
+  font-weight: 700;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: var(--transition);
+}
+.miscon-btn:hover:not(:disabled) {
+  border-color: var(--cyan);
+  background: var(--bg-hover);
+}
+.miscon-btn:disabled {
+  cursor: default;
+  opacity: 0.85;
+}
+.miscon-feedback {
+  display: none;
+  padding: 0.85rem 1rem;
+  border-radius: var(--radius-md);
+  font-size: 0.88rem;
+  line-height: 1.5;
+  margin-top: 0.75rem;
+}
+.miscon-feedback.show {
+  display: block;
+}
+
+/* Quiz Interface (Module IX) */
+.quiz-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  margin-bottom: 1.5rem;
+}
+.quiz-progress-bar-wrap {
+  width: 100%;
+  height: 8px;
+  background: var(--bg-secondary);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+}
+.quiz-progress-bar {
+  height: 100%;
+  width: 6.67%;
+  background: linear-gradient(90deg, var(--cyan), #4caf50);
+  transition: width 0.3s ease;
+}
+.quiz-question-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 1.25rem;
+  color: #fff;
+}
+.quiz-options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+.quiz-option {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.85rem 1.25rem;
+  border-radius: var(--radius-md);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  cursor: pointer;
+  transition: var(--transition);
+  font-size: 0.95rem;
+}
+.quiz-option:hover {
+  background: var(--bg-hover);
+  border-color: var(--cyan);
+}
+.quiz-option.selected {
+  border-color: var(--cyan);
+  background: rgba(0, 188, 212, 0.1);
+  color: #fff;
+}
+.quiz-option.correct {
+  border-color: var(--green) !important;
+  background: rgba(76, 175, 80, 0.15) !important;
+  color: #a5d6a7 !important;
+}
+.quiz-option.incorrect {
+  border-color: var(--red) !important;
+  background: rgba(244, 67, 54, 0.15) !important;
+  color: #ef9a9a !important;
+}
+.quiz-feedback {
+  padding: 1rem 1.25rem;
+  border-radius: var(--radius-md);
+  margin-bottom: 1.25rem;
+  display: none;
+}
+.quiz-feedback.show {
+  display: block;
+}
+
+/* Formula Sheet (Module X) */
+.formula-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.25rem;
+}
+.formula-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 1.25rem;
+  position: relative;
+}
+.formula-card-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--cyan);
+  margin-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 0.4rem;
+}
+
+/* Print CSS */
+@media print {
+  body {
+    background: #fff !important;
+    color: #000 !important;
+    font-size: 12pt;
+  }
+  .sidebar, .mobile-header, .module-section:not(#mod-10), .no-print, .btn, .hud-strip {
+    display: none !important;
+  }
+  .main-wrapper {
+    margin: 0 !important;
+    padding: 0 !important;
+    max-width: 100% !important;
+  }
+  #mod-10 {
+    display: block !important;
+  }
+  .formula-card {
+    background: #fff !important;
+    border: 1px solid #ccc !important;
+    page-break-inside: avoid;
+    color: #000 !important;
+    box-shadow: none !important;
+  }
+  .formula-card-title {
+    color: #000 !important;
+    border-bottom: 1px solid #999 !important;
+  }
+  .katex {
+    color: #000 !important;
+  }
+}
+
+/* Responsive Media Queries */
+@media (max-width: 1200px) {
+  .charts-grid {
+    grid-template-columns: 1fr;
+  }
+  .grid-3 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 992px) {
+  .mobile-header {
+    display: flex;
+  }
+  .sidebar {
+    transform: translateX(-100%);
+  }
+  .sidebar.open {
+    transform: translateX(0);
+  }
+  .sidebar-backdrop.open {
+    display: block;
+  }
+  .main-wrapper {
+    margin-left: 0;
+    padding: 1rem;
+    padding-top: calc(var(--header-h) + 1rem);
+  }
+  .grid-2, .grid-3, .grid-4 {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  h1 { font-size: 1.5rem; }
+  h2 { font-size: 1.3rem; }
+  .module-hero { padding: 1.25rem 1rem; }
+  .card { padding: 1rem; }
+}
+
+  </style>
+</head>
+<body>
+  <div class="app-layout">
+
+<!-- Mobile Header -->
+<header class="mobile-header no-print">
+  <div class="mobile-title">
+    <span>⚛️</span> Cinemática 1D
+  </div>
+  <button id="menu-toggle" class="btn-menu" aria-label="Abrir Menú">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+  </button>
+</header>
+
+<div class="sidebar-backdrop" id="sidebar-backdrop"></div>
+
+<!-- Sidebar Navigation -->
+<aside class="sidebar no-print" id="sidebar">
+  <div class="sidebar-brand">
+    <div class="brand-title">
+      <span>⚛️</span> Cinemática<span>1D</span>
+    </div>
+    <div class="brand-sub">Física Preuniversitaria</div>
+  </div>
+  <nav class="sidebar-nav">
+    <a class="nav-item active" data-mod="mod-1">
+      <span class="nav-num">I</span>
+      <span class="nav-icon">📖</span>
+      <span>Fundamentos</span>
+    </a>
+    <a class="nav-item" data-mod="mod-2">
+      <span class="nav-num">II</span>
+      <span class="nav-icon">🎯</span>
+      <span>Sistema de Referencia</span>
+    </a>
+    <a class="nav-item" data-mod="mod-3">
+      <span class="nav-num">III</span>
+      <span class="nav-icon">➡️</span>
+      <span>MRU</span>
+    </a>
+    <a class="nav-item" data-mod="mod-4">
+      <span class="nav-num">IV</span>
+      <span class="nav-icon">⚡</span>
+      <span>MRUV</span>
+    </a>
+    <a class="nav-item" data-mod="mod-5">
+      <span class="nav-num">V</span>
+      <span class="nav-icon">📈</span>
+      <span>Gráficas Cinemáticas</span>
+    </a>
+    <a class="nav-item" data-mod="mod-6">
+      <span class="nav-num">VI</span>
+      <span class="nav-icon">🍎</span>
+      <span>Caída Libre</span>
+    </a>
+    <a class="nav-item" data-mod="mod-7">
+      <span class="nav-num">VII</span>
+      <span class="nav-icon">📝</span>
+      <span>Problemas Resueltos</span>
+    </a>
+    <a class="nav-item" data-mod="mod-8">
+      <span class="nav-num">VIII</span>
+      <span class="nav-icon">⚠️</span>
+      <span>Errores Conceptuales</span>
+    </a>
+    <a class="nav-item" data-mod="mod-9">
+      <span class="nav-num">IX</span>
+      <span class="nav-icon">🏆</span>
+      <span>Quiz Evaluativo</span>
+    </a>
+    <a class="nav-item" data-mod="mod-10">
+      <span class="nav-num">X</span>
+      <span class="nav-icon">📋</span>
+      <span>Formulario & Resumen</span>
+    </a>
+  </nav>
+  <div class="sidebar-footer">
+    <span>Laboratorio Interactivo 1D</span><br>
+    <span style="color:var(--cyan);">Google DeepMind Spec</span>
+  </div>
+</aside>
+
+    <main class="main-wrapper">
+
+<!-- MODULE I: Fundamentos de la Cinemática -->
+<section id="mod-1" class="module-section active">
+  <div class="module-hero">
+    <span class="module-tag">Módulo I</span>
+    <h1 class="module-title">Fundamentos de la Cinemática</h1>
+    <p class="module-desc">
+      La cinemática es la rama de la física clásica que describe el movimiento de los cuerpos en el espacio y en el tiempo, 
+      prescindiendo por completo de las causas que lo originan (las fuerzas). En este módulo abordamos los conceptos primarios 
+      que sustentan toda la mecánica unidimensional.
+    </p>
+  </div>
+
+  <!-- Theory Cards Grid -->
+  <div class="grid-3">
+    <!-- Card 1 -->
+    <div class="theory-card">
+      <span class="theory-num">01</span>
+      <h3 class="theory-title">¿Qué estudia la Cinemática?</h3>
+      <div class="theory-body">
+        Estudia la geometría del movimiento sin atender a las fuerzas causantes ni a la masa del cuerpo. 
+        Responde a las preguntas: <em>¿dónde está?</em>, <em>¿a qué velocidad se traslada?</em> y <em>¿cómo cambia esa velocidad con el tiempo?</em>
+        A diferencia de la <strong>Dinámica</strong>, la Cinemática describe puramente la trayectoria temporal y espacial.
+      </div>
+    </div>
+
+    <!-- Card 2 -->
+    <div class="theory-card">
+      <span class="theory-num">02</span>
+      <h3 class="theory-title">Concepto de Partícula</h3>
+      <div class="theory-body">
+        Llamamos <strong>partícula</strong> o <strong>punto material</strong> a un cuerpo cuyas dimensiones espaciales son despreciables frente a las distancias recorridas en el fenómeno bajo estudio. 
+        Esto nos permite modelar objetos complejos (autos, trenes, planetas) como un único punto geométrico dotado de posición.
+      </div>
+    </div>
+
+    <!-- Card 3 -->
+    <div class="theory-card">
+      <span class="theory-num">03</span>
+      <h3 class="theory-title">Sistema de Referencia</h3>
+      <div class="theory-body">
+        El movimiento es intrínsecamente <strong>relativo</strong>. Para describirlo requerimos:
+        <ul style="margin-top:0.4rem; padding-left:1.2rem;">
+          <li>Un observador puntual en reposo relativo.</li>
+          <li>Un sistema de coordenadas (en 1D, un eje horizontal $x$ o vertical $y$).</li>
+          <li>Un reloj para sincronizar instantes temporales ($t$).</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Card 4 -->
+    <div class="theory-card">
+      <span class="theory-num">04</span>
+      <h3 class="theory-title">Posición y Coordenada</h3>
+      <div class="theory-body">
+        La <strong>posición</strong> $\vec{r}$ de una partícula indica su localización respecto al origen de coordenadas ($O$). 
+        En una dimensión recta, se especifica mediante un único escalar con signo:
+        $$x \in \mathbb{R}$$
+        El signo positivo ($+$) o negativo ($-$) denota a qué lado del origen se ubica el móvil.
+      </div>
+    </div>
+
+    <!-- Card 5 -->
+    <div class="theory-card">
+      <span class="theory-num">05</span>
+      <h3 class="theory-title">Trayectoria Rectilínea</h3>
+      <div class="theory-body">
+        La <strong>trayectoria</strong> es el conjunto geométrico de todas las posiciones sucesivas ocupadas por el cuerpo en el tiempo. 
+        En cinemática unidimensional, la trayectoria es estrictamente una <strong>línea recta</strong>. 
+        El móvil sólo puede avanzar hacia adelante o retroceder sobre dicha recta.
+      </div>
+    </div>
+
+    <!-- Card 6 -->
+    <div class="theory-card">
+      <span class="theory-num">06</span>
+      <h3 class="theory-title">Distancia vs Desplazamiento</h3>
+      <div class="theory-body">
+        ¡Una de las confusiones más frecuentes!
+        <p style="margin-top:0.4rem;">
+          <strong>Desplazamiento ($\Delta x$):</strong> Magnitud vectorial. Cambio neto de posición:
+          $$\Delta x = x_f - x_i$$
+          Puede ser positivo, negativo o cero.
+        </p>
+        <p>
+          <strong>Distancia recorrida ($d$):</strong> Magnitud escalar no negativa ($d \ge 0$). Longitud total del camino recorrido acumulado.
+        </p>
+      </div>
+    </div>
+
+    <!-- Card 7 -->
+    <div class="theory-card">
+      <span class="theory-num">07</span>
+      <h3 class="theory-title">Rapidez Media vs Velocidad Media</h3>
+      <div class="theory-body">
+        <strong>Velocidad Media ($v_{\text{med}}$):</strong> Razón entre el desplazamiento neto y el tiempo transcurrido:
+        $$v_{\text{med}} = \frac{\Delta x}{\Delta t} = \frac{x_f - x_i}{t_f - t_i}$$
+        <strong>Rapidez Media ($v_{\text{rap,med}}$):</strong> Razón escalar entre la distancia total y el tiempo:
+        $$v_{\text{rap,med}} = \frac{d_{\text{total}}}{\Delta t}$$
+        ¡Siempre se cumple que $v_{\text{rap,med}} \ge |v_{\text{med}}|$!
+      </div>
+    </div>
+
+    <!-- Card 8 -->
+    <div class="theory-card">
+      <span class="theory-num">08</span>
+      <h3 class="theory-title">Velocidad Instantánea</h3>
+      <div class="theory-body">
+        Es la velocidad que posee el móvil en un instante específico de tiempo $t$. 
+        De manera intuitiva (sin cálculo diferencial), representa la velocidad media calculada sobre un intervalo de tiempo infinitesimalmente pequeño:
+        $$\Delta t \to 0$$
+        Es la lectura exacta que marcaría el velocímetro del automóvil en ese milisegundo preciso.
+      </div>
+    </div>
+
+    <!-- Card 9 -->
+    <div class="theory-card">
+      <span class="theory-num">09</span>
+      <h3 class="theory-title">Aceleración Media e Instantánea</h3>
+      <div class="theory-body">
+        Mide el ritmo de cambio temporal de la velocidad.
+        <p style="margin-top:0.4rem;">
+          <strong>Aceleración Media ($a_{\text{med}}$):</strong>
+          $$a_{\text{med}} = \frac{\Delta v}{\Delta t} = \frac{v_f - v_i}{t_f - t_i}$$
+        </p>
+        Unidad SI: $\text{m/s}^2$. Si la velocidad no cambia en magnitud ni dirección, la aceleración es nula.
+      </div>
+    </div>
+  </div>
+
+  <!-- Interactive Demo: Persona en la Recta Numérica -->
+  <div class="card" style="margin-top: 2rem;">
+    <div class="card-header">
+      <div class="card-title">
+        <span style="color:var(--cyan);">🚶‍♂️ Demostración Interactiva:</span> Distancia Recorrida vs Desplazamiento Neto
+      </div>
+      <span class="problem-badge badge-mru">Experimento Visual</span>
+    </div>
+    <p>
+      Configura la posición inicial ($x_i$), el punto donde la persona da la vuelta ($x_{\text{retorno}}$) y la posición final ($x_f$).
+      Observa cómo la <strong>distancia</strong> suma la longitud de todos los tramos recorridos, mientras que el <strong>desplazamiento neto</strong> 
+      solo conecta el punto de partida con el de llegada.
+    </p>
+
+    <!-- Sliders Grid -->
+    <div class="controls-panel">
+      <div class="control-row">
+        <div class="slider-group">
+          <div class="slider-header">
+            <span class="slider-label">Posición Inicial ($x_i$)</span>
+            <span class="slider-val" id="m1-xi-val">-10 m</span>
+          </div>
+          <input type="range" id="m1-xi" min="-20" max="20" value="-10" step="1">
+        </div>
+        <div class="slider-group">
+          <div class="slider-header">
+            <span class="slider-label">Punto de Retorno ($x_{\text{ret}}$)</span>
+            <span class="slider-val magenta" id="m1-xret-val">15 m</span>
+          </div>
+          <input type="range" id="m1-xret" min="-20" max="20" value="15" step="1">
+        </div>
+        <div class="slider-group">
+          <div class="slider-header">
+            <span class="slider-label">Posición Final ($x_f$)</span>
+            <span class="slider-val cyan" id="m1-xf-val">5 m</span>
+          </div>
+          <input type="range" id="m1-xf" min="-20" max="20" value="5" step="1">
+        </div>
+      </div>
+      <div class="btn-group" style="margin-top:1rem;">
+        <button class="btn btn-cyan" id="m1-play-btn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          Animar Recorrido
+        </button>
+        <button class="btn btn-outline" id="m1-reset-btn">Reiniciar Vista</button>
+      </div>
+    </div>
+
+    <!-- HUD Stats -->
+    <div class="hud-strip">
+      <div class="stat-pill">
+        <span class="stat-label">Tramo 1 ($x_i \to x_{\text{ret}}$)</span>
+        <span class="stat-value" id="m1-t1-val">$\Delta x_1 = +25\text{ m}$</span>
+      </div>
+      <div class="stat-pill">
+        <span class="stat-label">Tramo 2 ($x_{\text{ret}} \to x_f$)</span>
+        <span class="stat-value" id="m1-t2-val">$\Delta x_2 = -10\text{ m}$</span>
+      </div>
+      <div class="stat-pill magenta">
+        <span class="stat-label">Distancia Total ($d$)</span>
+        <span class="stat-value" id="m1-dist-val">35 m</span>
+      </div>
+      <div class="stat-pill cyan">
+        <span class="stat-label">Desplazamiento Neto ($\Delta x$)</span>
+        <span class="stat-value" id="m1-disp-val">+15 m</span>
+      </div>
+    </div>
+
+    <!-- Interactive Canvas -->
+    <div class="canvas-container">
+      <canvas id="m1-canvas" height="230"></canvas>
+    </div>
+
+    <div class="callout callout-yellow">
+      <div class="callout-title">💡 Conclusión Física Fundamental</div>
+      <div class="callout-body">
+        La distancia es la suma de los valores absolutos de cada desplazamiento individual: 
+        $d = |\Delta x_1| + |\Delta x_2| = |15 - (-10)| + |5 - 15| = 25 + 10 = 35\text{ m}$.
+        En cambio, el desplazamiento neto es estrictamente la diferencia entre el estado final y el inicial: 
+        $\Delta x = x_f - x_i = 5 - (-10) = +15\text{ m}$. ¡El vector desplazamiento no depende del camino seguido!
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- MODULE II: Sistema de Referencia y Movimiento Rectilíneo -->
+<section id="mod-2" class="module-section">
+  <div class="module-hero">
+    <span class="module-tag">Módulo II</span>
+    <h1 class="module-title">Sistema de Referencia y Movimiento Rectilíneo</h1>
+    <p class="module-desc">
+      El vector de posición localiza la partícula respecto al origen elegido, mientras que el vector desplazamiento describe 
+      el cambio de posición entre dos instantes. Comprende visualmente cómo los signos determinan el sentido del movimiento sobre el eje coordenado.
+    </p>
+  </div>
+
+  <div class="grid-2">
+    <!-- Left Column: Controls & HUD -->
+    <div>
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">⚙️ Parámetros de Simulación</div>
+        </div>
+        <div class="controls-panel">
+          <div class="control-row">
+            <div class="slider-group">
+              <div class="slider-header">
+                <span class="slider-label">Posición Inicial ($x_i$)</span>
+                <span class="slider-val" id="m2-xi-val">-30 m</span>
+              </div>
+              <input type="range" id="m2-xi" min="-45" max="45" value="-30" step="1">
+            </div>
+          </div>
+          <div class="control-row">
+            <div class="slider-group">
+              <div class="slider-header">
+                <span class="slider-label">Posición Final ($x_f$)</span>
+                <span class="slider-val cyan" id="m2-xf-val">35 m</span>
+              </div>
+              <input type="range" id="m2-xf" min="-45" max="45" value="35" step="1">
+            </div>
+          </div>
+          <div class="control-row">
+            <div class="slider-group">
+              <div class="slider-header">
+                <span class="slider-label">Duración del Movimiento ($\Delta t$)</span>
+                <span class="slider-val green" id="m2-dt-val">8 s</span>
+              </div>
+              <input type="range" id="m2-dt" min="2" max="20" value="8" step="1">
+            </div>
+          </div>
+          <div class="control-row">
+            <div class="slider-group">
+              <div class="slider-header">
+                <span class="slider-label">Escala Visual (Zoom)</span>
+                <span class="slider-val yellow" id="m2-scale-val">1.0x</span>
+              </div>
+              <input type="range" id="m2-scale" min="0.5" max="1.5" value="1.0" step="0.25">
+            </div>
+          </div>
+
+          <div class="btn-group" style="margin-top:1.25rem;">
+            <button class="btn btn-cyan" id="m2-play-btn">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              Reproducir
+            </button>
+            <button class="btn btn-outline" id="m2-pause-btn">Pausar</button>
+            <button class="btn btn-outline" id="m2-reset-btn">Reiniciar</button>
+          </div>
+        </div>
+
+        <!-- HUD display -->
+        <div class="hud-strip">
+          <div class="stat-pill cyan">
+            <span class="stat-label">Posición Actual ($x$)</span>
+            <span class="stat-value" id="m2-x-now">-30.0 m</span>
+          </div>
+          <div class="stat-pill">
+            <span class="stat-label">Tiempo Transcurrido ($t$)</span>
+            <span class="stat-value" id="m2-t-now">0.0 s</span>
+          </div>
+          <div class="stat-pill green">
+            <span class="stat-label">Desplazamiento ($\Delta x$)</span>
+            <span class="stat-value" id="m2-dx-now">0.0 m</span>
+          </div>
+          <div class="stat-pill yellow">
+            <span class="stat-label">Sentido de Avance</span>
+            <span class="stat-value" id="m2-dir-now">Hacia la Derecha (+)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column: Canvas Simulation -->
+    <div>
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">🔬 Visualización del Eje y Vectores</div>
+          <span class="problem-badge badge-mru">Tiempo Real</span>
+        </div>
+        <div class="canvas-container">
+          <canvas id="m2-canvas" height="340"></canvas>
+        </div>
+        
+        <div class="callout callout-cyan">
+          <div class="callout-title">Convención de Signos en 1D</div>
+          <div class="callout-body">
+            <strong>Vector de Posición ($\vec{r}$):</strong> Flecha cian trazada desde el origen de coordenadas ($O$) hasta la partícula. 
+            Si $x > 0$, la partícula está al este/derecha del origen; si $x < 0$, está al oeste/izquierda.<br>
+            <strong>Vector Desplazamiento ($\Delta \vec{x}$):</strong> Flecha verde trazada desde la posición inicial ($x_i$) hasta la posición actual ($x(t)$).
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- MODULE III: MRU (Movimiento Rectilíneo Uniforme) -->
+<section id="mod-3" class="module-section">
+  <div class="module-hero">
+    <span class="module-tag">Módulo III</span>
+    <h1 class="module-title">MRU: Movimiento Rectilíneo Uniforme</h1>
+    <p class="module-desc">
+      El movimiento más elemental de la naturaleza: velocidad vectorial estrictamente constante en magnitud y dirección, 
+      lo cual exige que la aceleración sea idénticamente cero en todo instante.
+    </p>
+  </div>
+
+  <!-- Theory Row -->
+  <div class="grid-3" style="margin-bottom:1.5rem;">
+    <div class="theory-card">
+      <span class="theory-num">Ecuación Horaria</span>
+      <h3 class="theory-title">Posición en Función del Tiempo</h3>
+      <div class="theory-body">
+        La posición cambia de forma lineal respecto al tiempo transcurrido:
+        $$x(t) = x_0 + v \cdot t$$
+        Donde $x_0$ es la posición inicial en $t=0$, y $v$ es la velocidad constante.
+      </div>
+    </div>
+    <div class="theory-card">
+      <span class="theory-num">Relación Fundamental</span>
+      <h3 class="theory-title">Desplazamiento y Velocidad</h3>
+      <div class="theory-body">
+        El desplazamiento es directamente proporcional al intervalo de tiempo:
+        $$\Delta x = v \cdot \Delta t \implies v = \frac{\Delta x}{\Delta t}$$
+        En intervalos de tiempo iguales, el móvil recorre distancias idénticas.
+      </div>
+    </div>
+    <div class="theory-card">
+      <span class="theory-num">Condición Dinámica</span>
+      <h3 class="theory-title">Aceleración Nula</h3>
+      <div class="theory-body">
+        Dado que la velocidad no varía en ningún momento:
+        $$a(t) = 0 \quad \forall t$$
+        De acuerdo con la 1ª Ley de Newton, la fuerza neta que actúa sobre el móvil es cero.
+      </div>
+    </div>
+  </div>
+
+  <!-- Simulation & Charts -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">🚗 Simulación Interactiva de MRU</div>
+      <div class="btn-group">
+        <button class="btn btn-cyan btn-sm" id="m3-play-btn">Iniciar</button>
+        <button class="btn btn-outline btn-sm" id="m3-pause-btn">Pausa</button>
+        <button class="btn btn-outline btn-sm" id="m3-reset-btn">Reiniciar</button>
+      </div>
+    </div>
+
+    <!-- Sliders -->
+    <div class="controls-panel">
+      <div class="control-row">
+        <div class="slider-group">
+          <div class="slider-header">
+            <span class="slider-label">Posición Inicial ($x_0$)</span>
+            <span class="slider-val cyan" id="m3-x0-val">-20 m</span>
+          </div>
+          <input type="range" id="m3-x0" min="-30" max="30" value="-20" step="1">
+        </div>
+        <div class="slider-group">
+          <div class="slider-header">
+            <span class="slider-label">Velocidad Constante ($v$)</span>
+            <span class="slider-val green" id="m3-v-val">8.0 m/s</span>
+          </div>
+          <input type="range" id="m3-v" min="-15" max="15" value="8" step="0.5">
+        </div>
+        <div class="slider-group">
+          <div class="slider-header">
+            <span class="slider-label">Duración Máxima ($t_{\max}$)</span>
+            <span class="slider-val yellow" id="m3-dur-val">10 s</span>
+          </div>
+          <input type="range" id="m3-dur" min="4" max="20" value="10" step="1">
+        </div>
+      </div>
+    </div>
+
+    <!-- HUD -->
+    <div class="hud-strip">
+      <div class="stat-pill cyan">
+        <span class="stat-label">Posición $x(t)$</span>
+        <span class="stat-value" id="m3-hud-x">-20.0 m</span>
+      </div>
+      <div class="stat-pill green">
+        <span class="stat-label">Velocidad $v$</span>
+        <span class="stat-value" id="m3-hud-v">+8.0 m/s</span>
+      </div>
+      <div class="stat-pill yellow">
+        <span class="stat-label">Tiempo $t$</span>
+        <span class="stat-value" id="m3-hud-t">0.00 s</span>
+      </div>
+      <div class="stat-pill magenta">
+        <span class="stat-label">Desplazamiento $\Delta x$</span>
+        <span class="stat-value" id="m3-hud-dx">0.0 m</span>
+      </div>
+    </div>
+
+    <!-- Track Canvas -->
+    <div class="canvas-container">
+      <canvas id="m3-canvas" height="180"></canvas>
+    </div>
+
+    <!-- 3 Synchronized Charts -->
+    <div class="charts-grid">
+      <div class="chart-box">
+        <div class="chart-title">
+          <span style="color:var(--cyan);">Posición vs Tiempo ($x-t$)</span>
+          <span style="font-size:0.75rem; color:var(--text-secondary);">Pendiente = $v$</span>
+        </div>
+        <div class="chart-canvas-wrap">
+          <canvas id="m3-chart-xt"></canvas>
+        </div>
+      </div>
+      <div class="chart-box">
+        <div class="chart-title">
+          <span style="color:var(--green);">Velocidad vs Tiempo ($v-t$)</span>
+          <span style="font-size:0.75rem; color:var(--text-secondary);">Área = $\Delta x$</span>
+        </div>
+        <div class="chart-canvas-wrap">
+          <canvas id="m3-chart-vt"></canvas>
+        </div>
+      </div>
+      <div class="chart-box">
+        <div class="chart-title">
+          <span style="color:var(--orange);">Aceleración vs Tiempo ($a-t$)</span>
+          <span style="font-size:0.75rem; color:var(--text-secondary);">$a \equiv 0$</span>
+        </div>
+        <div class="chart-canvas-wrap">
+          <canvas id="m3-chart-at"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Live Data Table -->
+    <div class="table-wrap">
+      <table class="data-table" id="m3-table">
+        <thead>
+          <tr>
+            <th>Tiempo $t$ (s)</th>
+            <th>Posición $x$ (m)</th>
+            <th>Desplazamiento $\Delta x$ (m)</th>
+            <th>Velocidad $v$ (m/s)</th>
+            <th>Aceleración $a$ (m/s²)</th>
+          </tr>
+        </thead>
+        <tbody id="m3-tbody">
+          <!-- Populated in real time -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+
+<!-- MODULE IV: MRUV (Movimiento Rectilíneo Uniformemente Variado) -->
+<section id="mod-4" class="module-section">
+  <div class="module-hero">
+    <span class="module-tag">Módulo IV</span>
+    <h1 class="module-title">MRUV: Movimiento Rectilíneo Uniformemente Variado</h1>
+    <p class="module-desc">
+      El movimiento con aceleración constante: la velocidad varía linealmente con el tiempo y la posición describe una parábola. 
+      Analiza cuándo el móvil frena o acelera según la concordancia u oposición de los signos de $\vec{v}$ y $\vec{a}$.
+    </p>
+  </div>
+
+  <!-- Equations Grid -->
+  <div class="grid-3" style="margin-bottom:1.5rem;">
+    <div class="theory-card">
+      <span class="theory-num">Ecuación 1</span>
+      <h3 class="theory-title">Velocidad Horaria</h3>
+      <div class="theory-body">
+        $$v(t) = v_0 + a \cdot t$$
+        La velocidad varía linealmente con el tiempo. La pendiente de esta recta es la aceleración $a$.
+      </div>
+    </div>
+    <div class="theory-card">
+      <span class="theory-num">Ecuación 2</span>
+      <h3 class="theory-title">Posición Horaria</h3>
+      <div class="theory-body">
+        $$x(t) = x_0 + v_0 \cdot t + \frac{1}{2}a \cdot t^2$$
+        La posición es una función cuadrática del tiempo (parábola en la gráfica $x-t$).
+      </div>
+    </div>
+    <div class="theory-card">
+      <span class="theory-num">Ecuación 3 (Torricelli)</span>
+      <h3 class="theory-title">Independiente del Tiempo</h3>
+      <div class="theory-body">
+        $$v^2 = v_0^2 + 2a(x - x_0)$$
+        Relaciona directamente la rapidez adquirida con el desplazamiento recorrido $\Delta x$.
+      </div>
+    </div>
+  </div>
+
+  <div class="grid-2" style="margin-bottom:1.5rem;">
+    <div class="theory-card">
+      <span class="theory-num">Ecuación 4</span>
+      <h3 class="theory-title">Velocidad Media en MRUV</h3>
+      <div class="theory-body">
+        Exclusivamente cuando la aceleración es constante, la velocidad media es el promedio aritmético:
+        $$v_{\text{med}} = \frac{v_0 + v}{2}$$
+      </div>
+    </div>
+    <div class="theory-card">
+      <span class="theory-num">Ecuación 5</span>
+      <h3 class="theory-title">Desplazamiento por Promedio</h3>
+      <div class="theory-body">
+        Útil para calcular $\Delta x$ sin necesidad de conocer explícitamente la aceleración $a$:
+        $$\Delta x = \left(\frac{v_0 + v}{2}\right) \cdot t$$
+      </div>
+    </div>
+  </div>
+
+  <!-- Simulation Container -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">⚡ Laboratorio Dinámico de MRUV</div>
+      <div class="btn-group">
+        <button class="btn btn-cyan btn-sm" id="m4-play-btn">Iniciar</button>
+        <button class="btn btn-outline btn-sm" id="m4-pause-btn">Pausa</button>
+        <button class="btn btn-outline btn-sm" id="m4-reset-btn">Reiniciar</button>
+      </div>
+    </div>
+
+    <!-- Presets -->
+    <div style="margin-bottom:1rem;">
+      <span style="font-size:0.85rem; font-weight:700; color:var(--text-secondary); margin-right:0.5rem;">Escenarios Predeterminados:</span>
+      <div class="btn-group" style="display:inline-flex;">
+        <button class="btn btn-outline btn-sm" id="m4-preset-1">1. $v_0>0, a>0$ (Acelera derecha)</button>
+        <button class="btn btn-outline btn-sm" id="m4-preset-2">2. $v_0>0, a<0$ (Frena y retrocede)</button>
+        <button class="btn btn-outline btn-sm" id="m4-preset-3">3. $v_0<0, a<0$ (Acelera izquierda)</button>
+        <button class="btn btn-outline btn-sm" id="m4-preset-4">4. $v_0<0, a>0$ (Frena izquierda)</button>
+        <button class="btn btn-outline btn-sm" id="m4-preset-5">5. $v_0=0, a>0$ (Desde reposo)</button>
+      </div>
+    </div>
+
+    <!-- Sliders -->
+    <div class="controls-panel">
+      <div class="control-row">
+        <div class="slider-group">
+          <div class="slider-header">
+            <span class="slider-label">Posición Inicial ($x_0$)</span>
+            <span class="slider-val cyan" id="m4-x0-val">0 m</span>
+          </div>
+          <input type="range" id="m4-x0" min="-30" max="30" value="0" step="1">
+        </div>
+        <div class="slider-group">
+          <div class="slider-header">
+            <span class="slider-label">Velocidad Inicial ($v_0$)</span>
+            <span class="slider-val green" id="m4-v0-val">12.0 m/s</span>
+          </div>
+          <input type="range" id="m4-v0" min="-20" max="20" value="12" step="1">
+        </div>
+        <div class="slider-group">
+          <div class="slider-header">
+            <span class="slider-label">Aceleración ($a$)</span>
+            <span class="slider-val orange" id="m4-a-val">-3.0 m/s²</span>
+          </div>
+          <input type="range" id="m4-a" min="-8" max="8" value="-3" step="0.5">
+        </div>
+        <div class="slider-group">
+          <div class="slider-header">
+            <span class="slider-label">Duración ($t_{\max}$)</span>
+            <span class="slider-val yellow" id="m4-dur-val">8 s</span>
+          </div>
+          <input type="range" id="m4-dur" min="2" max="20" value="8" step="1">
+        </div>
+      </div>
+    </div>
+
+    <!-- Dynamic Status Banner -->
+    <div id="m4-status-banner" class="status-banner status-slowing">
+      <span id="m4-status-text">⏳ Estado: FRENANDO (Velocidad y Aceleración tienen signos opuestos)</span>
+      <span id="m4-reversal-text" style="font-size:0.8rem; opacity:0.9;">Punto de parada en $t = 4.0\text{ s}$</span>
+    </div>
+
+    <!-- HUD -->
+    <div class="hud-strip">
+      <div class="stat-pill cyan">
+        <span class="stat-label">Posición $x(t)$</span>
+        <span class="stat-value" id="m4-hud-x">0.0 m</span>
+      </div>
+      <div class="stat-pill green">
+        <span class="stat-label">Velocidad $v(t)$</span>
+        <span class="stat-value" id="m4-hud-v">+12.0 m/s</span>
+      </div>
+      <div class="stat-pill orange">
+        <span class="stat-label">Aceleración $a$</span>
+        <span class="stat-value" id="m4-hud-a">-3.0 m/s²</span>
+      </div>
+      <div class="stat-pill yellow">
+        <span class="stat-label">Tiempo $t$</span>
+        <span class="stat-value" id="m4-hud-t">0.00 s</span>
+      </div>
+      <div class="stat-pill magenta">
+        <span class="stat-label">Desplazamiento $\Delta x$</span>
+        <span class="stat-value" id="m4-hud-dx">0.0 m</span>
+      </div>
+    </div>
+
+    <!-- Particle Canvas with Vectors -->
+    <div class="canvas-container">
+      <canvas id="m4-canvas" height="200"></canvas>
+    </div>
+
+    <!-- 3 Charts -->
+    <div class="charts-grid">
+      <div class="chart-box">
+        <div class="chart-title">
+          <span style="color:var(--cyan);">Posición ($x-t$)</span>
+          <span style="font-size:0.75rem; color:var(--text-secondary);">Parábola</span>
+        </div>
+        <div class="chart-canvas-wrap">
+          <canvas id="m4-chart-xt"></canvas>
+        </div>
+      </div>
+      <div class="chart-box">
+        <div class="chart-title">
+          <span style="color:var(--green);">Velocidad ($v-t$)</span>
+          <span style="font-size:0.75rem; color:var(--text-secondary);">Pendiente = $a$</span>
+        </div>
+        <div class="chart-canvas-wrap">
+          <canvas id="m4-chart-vt"></canvas>
+        </div>
+      </div>
+      <div class="chart-box">
+        <div class="chart-title">
+          <span style="color:var(--orange);">Aceleración ($a-t$)</span>
+          <span style="font-size:0.75rem; color:var(--text-secondary);">Constante</span>
+        </div>
+        <div class="chart-canvas-wrap">
+          <canvas id="m4-chart-at"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- MODULE V: Interpretación de Gráficas Cinemáticas -->
+<section id="mod-5" class="module-section">
+  <div class="module-hero">
+    <span class="module-tag">Módulo V</span>
+    <h1 class="module-title">Interpretación de Gráficas Cinemáticas</h1>
+    <p class="module-desc">
+      El lenguaje gráfico es el núcleo de la física moderna. Aprende a descifrar el movimiento relacionando 
+      las <strong>pendientes</strong> (derivadas algebraicas) y las <strong>áreas bajo las curvas</strong> con magnitudes físicas concretas.
+    </p>
+  </div>
+
+  <!-- Educational Callouts -->
+  <div class="grid-3" style="margin-bottom:1.5rem;">
+    <div class="callout callout-cyan">
+      <div class="callout-title">Curva $x-t$ (Posición vs Tiempo)</div>
+      <div class="callout-body">
+        • En MRU es una recta; en MRUV es una parábola.<br>
+        • La <strong>pendiente de la recta secante</strong> entre dos puntos representa la <strong>velocidad media</strong> ($v_{\text{med}} = \Delta x / \Delta t$).<br>
+        • La <strong>inclinación instantánea</strong> indica el signo de la velocidad (sube: $v>0$, horizontal: $v=0$, baja: $v<0$).
+      </div>
+    </div>
+    <div class="callout callout-green">
+      <div class="callout-title">Curva $v-t$ (Velocidad vs Tiempo)</div>
+      <div class="callout-body">
+        • La <strong>pendiente</strong> de la recta representa la <strong>aceleración</strong> ($a = \Delta v / \Delta t$).<br>
+        • El <strong>área geométrica con signo</strong> entre la curva y el eje temporal representa el <strong>desplazamiento neto</strong> ($\Delta x = \text{Área}$).<br>
+        • Cuando la gráfica corta el eje horizontal ($v=0$), el móvil se detiene momentáneamente e invierte su sentido de avance.
+      </div>
+    </div>
+    <div class="callout callout-orange">
+      <div class="callout-title">Curva $a-t$ (Aceleración vs Tiempo)</div>
+      <div class="callout-body">
+        • En MRU es la línea $a = 0$. En MRUV es una recta horizontal a la altura $a$.<br>
+        • El <strong>área bajo la curva</strong> entre dos instantes representa el <strong>cambio de velocidad</strong>:
+        $$\Delta v = v_f - v_i = a \cdot \Delta t$$
+      </div>
+    </div>
+  </div>
+
+  <!-- Interactive Graph Generator -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">📊 Generador Interactivo de Curvas</div>
+      <div class="btn-group">
+        <button class="btn btn-outline btn-sm active" id="m5-mode-mruv">Modo MRUV</button>
+        <button class="btn btn-outline btn-sm" id="m5-mode-mru">Modo MRU</button>
+      </div>
+    </div>
+
+    <!-- Sliders -->
+    <div class="controls-panel">
+      <div class="control-row">
+        <div class="slider-group">
+          <div class="slider-header">
+            <span class="slider-label">Posición Inicial ($x_0$)</span>
+            <span class="slider-val cyan" id="m5-x0-val">0 m</span>
+          </div>
+          <input type="range" id="m5-x0" min="-30" max="30" value="0" step="1">
+        </div>
+        <div class="slider-group">
+          <div class="slider-header">
+            <span class="slider-label">Velocidad Inicial ($v_0$)</span>
+            <span class="slider-val green" id="m5-v0-val">10 m/s</span>
+          </div>
+          <input type="range" id="m5-v0" min="-20" max="20" value="10" step="1">
+        </div>
+        <div class="slider-group" id="m5-a-group">
+          <div class="slider-header">
+            <span class="slider-label">Aceleración ($a$)</span>
+            <span class="slider-val orange" id="m5-a-val">-2.5 m/s²</span>
+          </div>
+          <input type="range" id="m5-a" min="-6" max="6" value="-2.5" step="0.5">
+        </div>
+        <div class="slider-group">
+          <div class="slider-header">
+            <span class="slider-label">Rango de Tiempo ($T$)</span>
+            <span class="slider-val yellow" id="m5-tmax-val">8 s</span>
+          </div>
+          <input type="range" id="m5-tmax" min="4" max="16" value="8" step="1">
+        </div>
+      </div>
+    </div>
+
+    <div class="charts-grid">
+      <div class="chart-box">
+        <div class="chart-title"><span style="color:var(--cyan);">Posición ($x-t$)</span></div>
+        <div class="chart-canvas-wrap" style="height:220px;">
+          <canvas id="m5-chart-xt"></canvas>
+        </div>
+      </div>
+      <div class="chart-box">
+        <div class="chart-title"><span style="color:var(--green);">Velocidad ($v-t$)</span></div>
+        <div class="chart-canvas-wrap" style="height:220px;">
+          <canvas id="m5-chart-vt"></canvas>
+        </div>
+        <div style="text-align:center;margin-top:0.5rem;">
+          <button id="m5-toggle-area-btn" onclick="m5ToggleArea()" style="
+            background:transparent;border:1px solid var(--green);color:var(--green);
+            border-radius:6px;padding:0.3rem 0.85rem;font-size:0.78rem;cursor:pointer;
+            transition:all 0.2s;">
+            📐 Mostrar área = desplazamiento
+          </button>
+          <div id="m5-area-label" style="display:none;margin-top:0.4rem;font-size:0.78rem;
+            color:var(--green);background:rgba(76,175,80,0.08);border-radius:6px;
+            padding:0.3rem 0.6rem;border:1px dashed var(--green);">
+            El <strong>área verde con signo</strong> bajo la curva representa el
+            <strong>desplazamiento neto Δx</strong> (positiva si v&gt;0, negativa si v&lt;0).
+          </div>
+        </div>
+      </div>
+      <div class="chart-box">
+        <div class="chart-title"><span style="color:var(--orange);">Aceleración ($a-t$)</span></div>
+        <div class="chart-canvas-wrap" style="height:220px;">
+          <canvas id="m5-chart-at"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Activity: Interpretación de Gráficas con Preguntas -->
+  <div class="card" style="margin-top:2rem;">
+    <div class="card-header">
+      <div class="card-title">
+        <span style="color:var(--yellow);">🧠 Actividad Práctica:</span> Diagnóstico e Interpretación Física
+      </div>
+      <span class="problem-badge badge-mruv">Desafío de Análisis</span>
+    </div>
+    <p>
+      Selecciona uno de los 5 casos de estudio. Analiza las curvas generadas y responde a las 5 preguntas diagnósticas. 
+      Haz clic en <strong>Comprobar Respuestas</strong> para recibir retroalimentación detallada.
+    </p>
+
+    <!-- Scenario Selector -->
+    <div style="margin-bottom:1.5rem;">
+      <span style="font-weight:700; color:var(--text-secondary); margin-right:0.5rem;">Caso de Estudio:</span>
+      <select id="m5-act-scenario" style="padding:0.4rem 0.8rem; background:var(--bg-secondary); color:var(--text-primary); border:1px solid var(--border-color); border-radius:var(--radius-sm); font-size:0.9rem;">
+        <option value="0">Caso 1: MRU con velocidad positiva constante</option>
+        <option value="1">Caso 2: MRUV frenando hasta detenerse</option>
+        <option value="2">Caso 3: MRUV partiendo del reposo hacia la izquierda</option>
+        <option value="3">Caso 4: Móvil en reposo permanente</option>
+        <option value="4">Caso 5: MRUV con frenado, parada e inversión de sentido</option>
+      </select>
+    </div>
+
+    <!-- Graph preview for the activity -->
+    <div class="charts-grid" style="margin-bottom:1.5rem;">
+      <div class="chart-box">
+        <div class="chart-title" style="color:var(--cyan);">$x-t$ del Caso</div>
+        <div class="chart-canvas-wrap" style="height:190px;"><canvas id="m5-act-xt"></canvas></div>
+      </div>
+      <div class="chart-box">
+        <div class="chart-title" style="color:var(--green);">$v-t$ del Caso</div>
+        <div class="chart-canvas-wrap" style="height:190px;"><canvas id="m5-act-vt"></canvas></div>
+      </div>
+      <div class="chart-box">
+        <div class="chart-title" style="color:var(--orange);">$a-t$ del Caso</div>
+        <div class="chart-canvas-wrap" style="height:190px;"><canvas id="m5-act-at"></canvas></div>
+      </div>
+    </div>
+
+    <!-- 5 Questions -->
+    <div id="m5-questions-box" style="display:flex; flex-direction:column; gap:1.25rem;">
+      <!-- Q1 -->
+      <div class="callout callout-cyan" style="margin:0;">
+        <div class="callout-title">1. ¿El objeto está en movimiento o en reposo?</div>
+        <div style="display:flex; gap:1.5rem; margin-top:0.4rem;">
+          <label><input type="radio" name="m5-q1" value="movimiento"> En movimiento</label>
+          <label><input type="radio" name="m5-q1" value="reposo"> En reposo</label>
+        </div>
+      </div>
+
+      <!-- Q2 -->
+      <div class="callout callout-green" style="margin:0;">
+        <div class="callout-title">2. ¿Cuál es el signo de la velocidad en el inicio ($t=0$)?</div>
+        <div style="display:flex; gap:1.5rem; margin-top:0.4rem;">
+          <label><input type="radio" name="m5-q2" value="positivo"> Positivo ($v_0 > 0$)</label>
+          <label><input type="radio" name="m5-q2" value="negativo"> Negativo ($v_0 < 0$)</label>
+          <label><input type="radio" name="m5-q2" value="cero"> Cero ($v_0 = 0$)</label>
+        </div>
+      </div>
+
+      <!-- Q3 -->
+      <div class="callout callout-yellow" style="margin:0;">
+        <div class="callout-title">3. Durante el tramo inicial, ¿la rapidez $|v|$ está aumentando, disminuyendo o es constante?</div>
+        <div style="display:flex; gap:1.5rem; margin-top:0.4rem;">
+          <label><input type="radio" name="m5-q3" value="aumentando"> Aumentando</label>
+          <label><input type="radio" name="m5-q3" value="disminuyendo"> Disminuyendo</label>
+          <label><input type="radio" name="m5-q3" value="constante"> Constante</label>
+        </div>
+      </div>
+
+      <!-- Q4 -->
+      <div class="callout callout-orange" style="margin:0;">
+        <div class="callout-title">4. ¿Cuál es el valor/signo de la aceleración ($a$)?</div>
+        <div style="display:flex; gap:1.5rem; margin-top:0.4rem;">
+          <label><input type="radio" name="m5-q4" value="positiva"> Positiva ($a > 0$)</label>
+          <label><input type="radio" name="m5-q4" value="negativa"> Negativa ($a < 0$)</label>
+          <label><input type="radio" name="m5-q4" value="cero"> Cero ($a = 0$)</label>
+        </div>
+      </div>
+
+      <!-- Q5 -->
+      <div class="callout callout-magenta" style="margin:0;">
+        <div class="callout-title">5. ¿El objeto cambia de sentido de avance en el intervalo observado?</div>
+        <div style="display:flex; gap:1.5rem; margin-top:0.4rem;">
+          <label><input type="radio" name="m5-q5" value="si"> Sí (la velocidad cruza por cero)</label>
+          <label><input type="radio" name="m5-q5" value="no"> No (mantiene su signo o está en reposo)</label>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:1.5rem; display:flex; gap:1rem; align-items:center;">
+      <button class="btn btn-yellow" id="m5-check-btn" style="background:var(--yellow); color:#05101f;">
+        ✓ Comprobar Respuestas
+      </button>
+      <div id="m5-feedback-summary" style="font-weight:700; font-size:1rem;"></div>
+    </div>
+
+    <!-- Feedback detail card -->
+    <div id="m5-feedback-box" class="callout callout-yellow" style="display:none; margin-top:1rem;">
+      <div class="callout-title">📝 Explicación Física del Caso:</div>
+      <div class="callout-body" id="m5-feedback-content"></div>
+    </div>
+  </div>
+</section>
+
+
+<!-- MODULE VI: Caída Libre y Lanzamiento Vertical -->
+<section id="mod-6" class="module-section">
+  <div class="module-hero">
+    <span class="module-tag">Módulo VI</span>
+    <h1 class="module-title">Caída Libre y Lanzamiento Vertical</h1>
+    <p class="module-desc">
+      Caso especial de MRUV en la vertical terrestre bajo la acción exclusiva del campo gravitatorio. 
+      Eje vertical positivo hacia arriba: la aceleración de la gravedad actúa siempre en sentido hacia el centro terrestre: $a_y = -g$.
+    </p>
+  </div>
+
+  <!-- Theory Row -->
+  <div class="grid-3" style="margin-bottom:1.5rem;">
+    <div class="theory-card">
+      <span class="theory-num">Ecuación 1</span>
+      <h3 class="theory-title">Velocidad Vertical</h3>
+      <div class="theory-body">
+        $$v_y(t) = v_{0y} - g \cdot t$$
+        Si sube, $v_y > 0$. En el punto más alto, $v_y = 0$. Al descender, $v_y < 0$. ¡Pero la aceleración $a_y = -g$ jamás se apaga!
+      </div>
+    </div>
+    <div class="theory-card">
+      <span class="theory-num">Ecuación 2</span>
+      <h3 class="theory-title">Posición Vertical (Altura)</h3>
+      <div class="theory-body">
+        $$y(t) = y_0 + v_{0y} \cdot t - \frac{1}{2}g \cdot t^2$$
+        La trayectoria temporal es parabólica simétrica si parte y cae al mismo nivel de referencia.
+      </div>
+    </div>
+    <div class="theory-card">
+      <span class="theory-num">Ecuación 3 (Torricelli)</span>
+      <h3 class="theory-title">Relación con la Altura</h3>
+      <div class="theory-body">
+        $$v_y^2 = v_{0y}^2 - 2g(y - y_0)$$
+        En la altura máxima $y_{\max}$:
+        $$y_{\max} = y_0 + \frac{v_{0y}^2}{2g}$$
+      </div>
+    </div>
+  </div>
+
+  <!-- Vertical Simulation & Charts -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">🍎 Simulador Gravitatorio Vertical</div>
+      <div class="btn-group">
+        <button class="btn btn-cyan btn-sm" id="m6-play-btn">Lanzar / Soltar</button>
+        <button class="btn btn-outline btn-sm" id="m6-pause-btn">Pausa</button>
+        <button class="btn btn-outline btn-sm" id="m6-reset-btn">Reiniciar</button>
+      </div>
+    </div>
+
+    <!-- Mode Buttons & Presets -->
+    <div style="display:flex; flex-wrap:wrap; gap:0.75rem; margin-bottom:1.25rem; align-items:center;">
+      <button class="btn btn-outline btn-sm active" id="m6-mode-freefall">Modo: Caída Libre ($v_{0y} = 0$)</button>
+      <button class="btn btn-outline btn-sm" id="m6-mode-launch">Modo: Lanzamiento Vertical ($v_{0y} > 0$)</button>
+      <span style="font-size:0.8rem; color:var(--text-secondary); margin-left:auto;">Planeta / Entorno:</span>
+      <div class="btn-group">
+        <button class="btn btn-outline btn-sm active" id="m6-g-earth">Tierra ($9.8$)</button>
+        <button class="btn btn-outline btn-sm" id="m6-g-moon">Luna ($1.62$)</button>
+        <button class="btn btn-outline btn-sm" id="m6-g-jupiter">Júpiter ($24.8$)</button>
+      </div>
+    </div>
+
+    <!-- Sliders -->
+    <div class="controls-panel">
+      <div class="control-row">
+        <div class="slider-group">
+          <div class="slider-header">
+            <span class="slider-label">Altura Inicial ($y_0$)</span>
+            <span class="slider-val cyan" id="m6-y0-val">45.0 m</span>
+          </div>
+          <input type="range" id="m6-y0" min="0" max="100" value="45" step="1">
+        </div>
+        <div class="slider-group">
+          <div class="slider-header">
+            <span class="slider-label">Velocidad Inicial ($v_{0y}$)</span>
+            <span class="slider-val green" id="m6-v0-val">0.0 m/s</span>
+          </div>
+          <input type="range" id="m6-v0" min="-30" max="30" value="0" step="1">
+        </div>
+        <div class="slider-group">
+          <div class="slider-header">
+            <span class="slider-label">Aceleración Gravitatoria ($g$)</span>
+            <span class="slider-val orange" id="m6-g-val">9.80 m/s²</span>
+          </div>
+          <input type="range" id="m6-g" min="1.0" max="25.0" value="9.8" step="0.1">
+        </div>
+      </div>
+    </div>
+
+    <!-- HUD Real Time -->
+    <div class="hud-strip">
+      <div class="stat-pill cyan">
+        <span class="stat-label">Altura $y(t)$</span>
+        <span class="stat-value" id="m6-hud-y">45.0 m</span>
+      </div>
+      <div class="stat-pill green">
+        <span class="stat-label">Velocidad $v_y(t)$</span>
+        <span class="stat-value" id="m6-hud-v">0.0 m/s</span>
+      </div>
+      <div class="stat-pill orange">
+        <span class="stat-label">Aceleración $a_y$</span>
+        <span class="stat-value" id="m6-hud-a">-9.8 m/s²</span>
+      </div>
+      <div class="stat-pill yellow">
+        <span class="stat-label">Tiempo $t$</span>
+        <span class="stat-value" id="m6-hud-t">0.00 s</span>
+      </div>
+      <div class="stat-pill magenta">
+        <span class="stat-label">Altura Máx / Vuelo</span>
+        <span class="stat-value" id="m6-hud-stats">--</span>
+      </div>
+    </div>
+
+    <!-- Two columns: Vertical Canvas + 3 Graphs -->
+    <div style="display:grid; grid-template-columns: 240px 1fr; gap:1.25rem;">
+      <!-- Canvas Vertical -->
+      <div class="canvas-container" style="margin-bottom:0; height:380px;">
+        <canvas id="m6-canvas" height="380"></canvas>
+      </div>
+
+      <!-- 3 Vertical Charts -->
+      <div style="display:flex; flex-direction:column; gap:0.75rem;">
+        <div class="chart-box" style="flex:1;">
+          <div class="chart-title"><span style="color:var(--cyan);">Altura vs Tiempo ($y-t$)</span></div>
+          <div class="chart-canvas-wrap" style="height:90px;"><canvas id="m6-chart-yt"></canvas></div>
+        </div>
+        <div class="chart-box" style="flex:1;">
+          <div class="chart-title"><span style="color:var(--green);">Velocidad vs Tiempo ($v_y-t$)</span></div>
+          <div class="chart-canvas-wrap" style="height:90px;"><canvas id="m6-chart-vt"></canvas></div>
+        </div>
+        <div class="chart-box" style="flex:1;">
+          <div class="chart-title"><span style="color:var(--orange);">Aceleración vs Tiempo ($a_y-t$)</span></div>
+          <div class="chart-canvas-wrap" style="height:90px;"><canvas id="m6-chart-at"></canvas></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout callout-magenta" style="margin-top:1.25rem;">
+      <div class="callout-title">⚠️ Paradoja Clásica del Punto Más Alto</div>
+      <div class="callout-body">
+        Cuando un objeto lanzado verticalmente alcanza su punto más alto ($y_{\max}$), su <strong>velocidad instantánea es exactamente cero ($v=0$)</strong>. 
+        Sin embargo, <strong>la aceleración NO es cero</strong>: sigue valiendo rigurosamente $a_y = -g = -9.8\text{ m/s}^2$. 
+        Si la aceleración fuese cero allí arriba, la fuerza neta se anularía y el cuerpo se quedaría flotando suspendido en el aire para siempre.
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- MODULE VII: Ejemplos Resueltos Paso a Paso -->
+<section id="mod-7" class="module-section">
+  <div class="module-hero">
+    <span class="module-tag">Módulo VII</span>
+    <h1 class="module-title">Ejemplos Resueltos Paso a Paso</h1>
+    <p class="module-desc">
+      Metodología sistemática de resolución física: identificación de datos, incógnitas, elección del sistema de referencia, 
+      formulación algebraica, sustitución con unidades, interpretación física y comprobación cruzada.
+    </p>
+  </div>
+
+  <!-- Problem 1 -->
+  <div class="problem-card">
+    <div class="problem-header" onclick="toggleSolution('prob-1')">
+      <div class="problem-title-row">
+        <span class="problem-badge badge-mru">Problema 1 • MRU</span>
+        <h3 style="margin:0; font-size:1.1rem;">Posición final de un móvil con velocidad constante</h3>
+      </div>
+      <button class="btn btn-outline btn-sm" id="btn-toggle-prob-1">Ver Solución Paso a Paso ▾</button>
+    </div>
+    <div style="padding: 1rem 1.5rem; border-top: 1px solid var(--border-color); background: var(--bg-card);">
+      <p style="margin:0; font-size:0.95rem;">
+        <strong>Enunciado:</strong> Un automóvil se desplaza sobre una carretera recta en MRU. En el instante $t = 0\text{ s}$, su posición respecto al origen de coordenadas es $x_0 = 10\text{ m}$. Si mantiene una velocidad uniforme de $v = 5\text{ m/s}$ hacia la derecha, ¿cuál será su posición al cabo de $t = 8\text{ s}$?
+      </p>
+    </div>
+    <div class="solution-panel" id="prob-1">
+      <div class="step-item">
+        <div class="step-label">1. Datos Conocidos</div>
+        <div class="step-body">$x_0 = 10\text{ m}$, $v = 5\text{ m/s}$, $t = 8\text{ s}$.</div>
+      </div>
+      <div class="step-item">
+        <div class="step-label">2. Incógnita</div>
+        <div class="step-body">Posición final $x(t=8\text{ s}) = ?$</div>
+      </div>
+      <div class="step-item">
+        <div class="step-label">3. Sistema de Referencia</div>
+        <div class="step-body">Eje unidimensional horizontal $x$, con sentido positivo ($+$) hacia la derecha. Origen en $x=0$.</div>
+      </div>
+      <div class="step-item">
+        <div class="step-label">4. Ecuación Física Aplicable</div>
+        <div class="step-body">Ecuación horaria del MRU:
+          $$x(t) = x_0 + v \cdot t$$
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-label">5. Sustitución Numérica</div>
+        <div class="step-body">
+          $$x(8) = 10\text{ m} + (5\text{ m/s}) \times (8\text{ s}) = 10\text{ m} + 40\text{ m} = 50\text{ m}$$
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-label">6. Resultado con Unidades</div>
+        <div class="step-body"><strong style="color:var(--cyan); font-size:1.1rem;">$x = 50\text{ m}$</strong></div>
+      </div>
+      <div class="step-item">
+        <div class="step-label">7. Interpretación Física</div>
+        <div class="step-body">El móvil recorre $40\text{ m}$ durante los $8\text{ s}$. Sumados a los $10\text{ m}$ donde ya se encontraba inicialmente, su ubicación final es $50\text{ m}$ al este del origen.</div>
+      </div>
+      <div class="step-item">
+        <div class="step-label">8. Comprobación Alternativa</div>
+        <div class="step-body">Verificamos la velocidad media: $v = \frac{\Delta x}{\Delta t} = \frac{50 - 10}{8} = \frac{40}{8} = 5\text{ m/s}$. ¡Coincide exactamente!</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Problem 2 -->
+  <div class="problem-card">
+    <div class="problem-header" onclick="toggleSolution('prob-2')">
+      <div class="problem-title-row">
+        <span class="problem-badge badge-mru">Problema 2 • Cinemática Básica</span>
+        <h3 style="margin:0; font-size:1.1rem;">Distancia recorrida vs Desplazamiento con retroceso</h3>
+      </div>
+      <button class="btn btn-outline btn-sm" id="btn-toggle-prob-2">Ver Solución Paso a Paso ▾</button>
+    </div>
+    <div style="padding: 1rem 1.5rem; border-top: 1px solid var(--border-color); background: var(--bg-card);">
+      <p style="margin:0; font-size:0.95rem;">
+        <strong>Enunciado:</strong> Una persona camina en línea recta partiendo de la posición $x_A = 2\text{ m}$ hasta $x_B = 14\text{ m}$. Inmediatamente gira 180° y camina en sentido opuesto hasta alcanzar $x_C = 6\text{ m}$. Calcula la distancia total recorrida y el desplazamiento neto.
+      </p>
+    </div>
+    <div class="solution-panel" id="prob-2">
+      <div class="step-item">
+        <div class="step-label">1. Datos Conocidos</div>
+        <div class="step-body">Posición inicial $x_i = 2\text{ m}$, punto intermedio $x_B = 14\text{ m}$, posición final $x_f = 6\text{ m}$.</div>
+      </div>
+      <div class="step-item">
+        <div class="step-label">2. Incógnitas</div>
+        <div class="step-body">Distancia total recorrida ($d_{\text{total}} = ?$) y Desplazamiento neto ($\Delta x = ?$).</div>
+      </div>
+      <div class="step-item">
+        <div class="step-label">3. Sistema de Referencia</div>
+        <div class="step-body">Eje horizontal $x$ graduado en metros, sentido positivo hacia la derecha.</div>
+      </div>
+      <div class="step-item">
+        <div class="step-label">4. Ecuaciones Físicas</div>
+        <div class="step-body">
+          $$d_{\text{total}} = |x_B - x_A| + |x_C - x_B|$$
+          $$\Delta x = x_f - x_i = x_C - x_A$$
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-label">5. Sustitución Numérica</div>
+        <div class="step-body">
+          $$d_1 = |14 - 2| = 12\text{ m}, \quad d_2 = |6 - 14| = |-8| = 8\text{ m}$$
+          $$d_{\text{total}} = 12 + 8 = 20\text{ m}$$
+          $$\Delta x = 6 - 2 = +4\text{ m}$$
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-label">6. Resultados con Unidades</div>
+        <div class="step-body">
+          <strong style="color:var(--magenta); font-size:1.05rem;">Distancia: $d = 20\text{ m}$</strong> | 
+          <strong style="color:var(--cyan); font-size:1.05rem;">Desplazamiento: $\Delta x = +4\text{ m}$</strong>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-label">7. Interpretación Física</div>
+        <div class="step-body">Las piernas de la persona dieron pasos equivalentes a $20\text{ m}$ de esfuerzo físico (distancia escalar siempre acumulativa). Sin embargo, al final del proceso, su posición efectiva sólo se encuentra desplazada $4\text{ m}$ hacia la derecha de donde empezó.</div>
+      </div>
+      <div class="step-item">
+        <div class="step-label">8. Comprobación Alternativa</div>
+        <div class="step-body">Suma vectorial de desplazamientos: $\Delta x_{\text{neto}} = \Delta x_1 + \Delta x_2 = (+12\text{ m}) + (-8\text{ m}) = +4\text{ m}$. ¡Correcto!</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Problem 3 -->
+  <div class="problem-card">
+    <div class="problem-header" onclick="toggleSolution('prob-3')">
+      <div class="problem-title-row">
+        <span class="problem-badge badge-mru">Problema 3 • Velocidad Media</span>
+        <h3 style="margin:0; font-size:1.1rem;">Cálculo de velocidad media a través del origen</h3>
+      </div>
+      <button class="btn btn-outline btn-sm" id="btn-toggle-prob-3">Ver Solución Paso a Paso ▾</button>
+    </div>
+    <div style="padding: 1rem 1.5rem; border-top: 1px solid var(--border-color); background: var(--bg-card);">
+      <p style="margin:0; font-size:0.95rem;">
+        <strong>Enunciado:</strong> Un móvil sobre un riel recto parte desde la coordenada $x_i = -4\text{ m}$ y alcanza la posición $x_f = 20\text{ m}$ tras un intervalo de tiempo de $\Delta t = 6\text{ s}$. Determina su velocidad media.
+      </p>
+    </div>
+    <div class="solution-panel" id="prob-3">
+      <div class="step-item">
+        <div class="step-label">1. Datos Conocidos</div>
+        <div class="step-body">$x_i = -4\text{ m}$, $x_f = 20\text{ m}$, $\Delta t = 6\text{ s}$.</div>
+      </div>
+      <div class="step-item">
+        <div class="step-label">2. Incógnita</div>
+        <div class="step-body">Velocidad media $v_{\text{med}} = ?$</div>
+      </div>
+      <div class="step-item">
+        <div class="step-label">3. Sistema de Referencia</div>
+        <div class="step-body">Eje unidimensional $x$. Observador en el origen $O(x=0)$. Sentido positivo hacia la derecha.</div>
+      </div>
+      <div class="step-item">
+        <div class="step-label">4. Ecuación Física</div>
+        <div class="step-body">Definición de velocidad media:
+          $$v_{\text{med}} = \frac{\Delta x}{\Delta t} = \frac{x_f - x_i}{\Delta t}$$
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-label">5. Sustitución Numérica</div>
+        <div class="step-body">
+          $$v_{\text{med}} = \frac{20\text{ m} - (-4\text{ m})}{6\text{ s}} = \frac{20 + 4}{6} = \frac{24\text{ m}}{6\text{ s}} = 4\text{ m/s}$$
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-label">6. Resultado con Unidades</div>
+        <div class="step-body"><strong style="color:var(--green); font-size:1.1rem;">$v_{\text{med}} = +4\text{ m/s}$</strong></div>
+      </div>
+      <div class="step-item">
+        <div class="step-label">7. Interpretación Física</div>
+        <div class="step-body">El signo positivo indica que, en promedio, el móvil avanzó hacia la derecha a razón de $4$ metros por cada segundo de reloj transcurrido.</div>
+      </div>
+      <div class="step-item">
+        <div class="step-label">8. Comprobación Alternativa</div>
+        <div class="step-body">Comprobando el desplazamiento: $\Delta x = v_{\text{med}} \cdot \Delta t = (4\text{ m/s}) \times (6\text{ s}) = 24\text{ m}$. Como $x_f = x_i + \Delta x = -4 + 24 = 20\text{ m}$, el resultado es rigurosamente verificado.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Problem 4 -->
+  <div class="problem-card">
+    <div class="problem-header" onclick="toggleSolution('prob-4')">
+      <div class="problem-title-row">
+        <span class="problem-badge badge-mruv">Problema 4 • MRUV</span>
+        <h3 style="margin:0; font-size:1.1rem;">Aceleración y desplazamiento con velocidad inicial</h3>
+      </div>
+      <button class="btn btn-outline btn-sm" id="btn-toggle-prob-4">Ver Solución Paso a Paso ▾</button>
+    </div>
+    <div style="padding: 1rem 1.5rem; border-top: 1px solid var(--border-color); background: var(--bg-card);">
+      <p style="margin:0; font-size:0.95rem;">
+        <strong>Enunciado:</strong> Una motocicleta entra a una autopista con una velocidad inicial de $v_0 = 4\text{ m/s}$ y acelera uniformemente a razón constante de $a = 2\text{ m/s}^2$ durante $t = 5\text{ s}$. Calcula su velocidad final y el desplazamiento efectuado en ese intervalo.
+      </p>
+    </div>
+    <div class="solution-panel" id="prob-4">
+      <div class="step-item">
+        <div class="step-label">1. Datos Conocidos</div>
+        <div class="step-body">$v_0 = 4\text{ m/s}$, $a = 2\text{ m/s}^2$, $t = 5\text{ s}$. Asumimos $x_0 = 0$.</div>
+      </div>
+      <div class="step-item">
+        <div class="step-label">2. Incógnitas</div>
+        <div class="step-body">Velocidad final ($v = ?$) y Desplazamiento ($\Delta x = ?$).</div>
+      </div>
+      <div class="step-item">
+        <div class="step-label">3. Sistema de Referencia</div>
+        <div class="step-body">Eje $x$ en el sentido del movimiento inicial (positivo hacia adelante).</div>
+      </div>
+      <div class="step-item">
+        <div class="step-label">4. Ecuaciones Físicas</div>
+        <div class="step-body">
+          $$v = v_0 + a \cdot t$$
+          $$\Delta x = v_0 \cdot t + \frac{1}{2}a \cdot t^2$$
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-label">5. Sustitución Numérica</div>
+        <div class="step-body">
+          $$v = 4\text{ m/s} + (2\text{ m/s}^2)(5\text{ s}) = 4 + 10 = 14\text{ m/s}$$
+          $$\Delta x = (4\text{ m/s})(5\text{ s}) + \frac{1}{2}(2\text{ m/s}^2)(5\text{ s})^2 = 20 + \frac{1}{2}(2)(25) = 20 + 25 = 45\text{ m}$$
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-label">6. Resultados con Unidades</div>
+        <div class="step-body">
+          <strong style="color:var(--green); font-size:1.05rem;">Velocidad Final: $v = 14\text{ m/s}$</strong> | 
+          <strong style="color:var(--cyan); font-size:1.05rem;">Desplazamiento: $\Delta x = 45\text{ m}$</strong>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-label">7. Interpretación Física</div>
+        <div class="step-body">El móvil gana $2\text{ m/s}$ de rapidez en cada segundo. Al término de $5\text{ s}$, su rapidez aumentó en $10\text{ m/s}$. El desplazamiento ($45\text{ m}$) supera con creces lo que habría avanzado sin acelerar ($20\text{ m}$).</div>
+      </div>
+      <div class="step-item">
+        <div class="step-label">8. Comprobación Alternativa</div>
+        <div class="step-body">Mediante la ecuación de Torricelli: $v^2 = v_0^2 + 2a\Delta x \implies 14^2 = 4^2 + 2(2)(45) \implies 196 = 16 + 180 = 196$. ¡Comprobación perfecta!</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Problem 5 -->
+  <div class="problem-card">
+    <div class="problem-header" onclick="toggleSolution('prob-5')">
+      <div class="problem-title-row">
+        <span class="problem-badge badge-mruv">Problema 5 • Frenado</span>
+        <h3 style="margin:0; font-size:1.1rem;">Tiempo de frenado y distancia de detención</h3>
+      </div>
+      <button class="btn btn-outline btn-sm" id="btn-toggle-prob-5">Ver Solución Paso a Paso ▾</button>
+    </div>
+    <div style="padding: 1rem 1.5rem; border-top: 1px solid var(--border-color); background: var(--bg-card);">
+      <p style="margin:0; font-size:0.95rem;">
+        <strong>Enunciado:</strong> Un conductor observa un obstáculo e imprime los frenos, generando una desaceleración constante de $a = -4\text{ m/s}^2$. Si la velocidad inicial era de $v_0 = 20\text{ m/s}$ ($72\text{ km/h}$) y el vehículo frena hasta detenerse por completo ($v = 0$), ¿cuánto tiempo tarda en detenerse y qué distancia recorre?
+      </p>
+    </div>
+    <div class="solution-panel" id="prob-5">
+      <div class="step-item">
+        <div class="step-label">1. Datos Conocidos</div>
+        <div class="step-body">$v_0 = 20\text{ m/s}$, $a = -4\text{ m/s}^2$, $v = 0\text{ m/s}$.</div>
+      </div>
+      <div class="step-item">
+        <div class="step-label">2. Incógnitas</div>
+        <div class="step-body">Tiempo de detención ($t = ?$) y distancia de frenado ($\Delta x = ?$).</div>
+      </div>
+      <div class="step-item">
+        <div class="step-label">3. Sistema de Referencia</div>
+        <div class="step-body">Sentido del avance inicial positivo (+). La aceleración retardatriz apunta en sentido opuesto (-).</div>
+      </div>
+      <div class="step-item">
+        <div class="step-label">4. Ecuaciones Físicas</div>
+        <div class="step-body">
+          $$v = v_0 + a \cdot t \implies t = \frac{v - v_0}{a}$$
+          $$\Delta x = v_0 \cdot t + \frac{1}{2}a \cdot t^2$$
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-label">5. Sustitución Numérica</div>
+        <div class="step-body">
+          $$t = \frac{0 - 20\text{ m/s}}{-4\text{ m/s}^2} = \frac{-20}{-4} = 5\text{ s}$$
+          $$\Delta x = (20)(5) + \frac{1}{2}(-4)(5)^2 = 100 - 2(25) = 100 - 50 = 50\text{ m}$$
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-label">6. Resultados con Unidades</div>
+        <div class="step-body">
+          <strong style="color:var(--yellow); font-size:1.05rem;">Tiempo de detención: $t = 5\text{ s}$</strong> | 
+          <strong style="color:var(--cyan); font-size:1.05rem;">Distancia de frenado: $\Delta x = 50\text{ m}$</strong>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-label">7. Interpretación Física</div>
+        <div class="step-body">El vehículo pierde $4\text{ m/s}$ de rapidez en cada segundo. Para extinguir los $20\text{ m/s}$ iniciales requiere exactamente $5\text{ s}$. Durante ese lapso recorre $50\text{ m}$, dato crítico para la seguridad vial.</div>
+      </div>
+      <div class="step-item">
+        <div class="step-label">8. Comprobación Alternativa</div>
+        <div class="step-body">Vía velocidad media: $\Delta x = \left(\frac{v_0 + v}{2}\right) t = \left(\frac{20 + 0}{2}\right) \times 5 = 10 \times 5 = 50\text{ m}$. ¡Total coherencia!</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Problem 6 -->
+  <div class="problem-card">
+    <div class="problem-header" onclick="toggleSolution('prob-6')">
+      <div class="problem-title-row">
+        <span class="problem-badge badge-freefall">Problema 6 • Caída Libre</span>
+        <h3 style="margin:0; font-size:1.1rem;">Tiempo de caída e impacto desde un edificio</h3>
+      </div>
+      <button class="btn btn-outline btn-sm" id="btn-toggle-prob-6">Ver Solución Paso a Paso ▾</button>
+    </div>
+    <div style="padding: 1rem 1.5rem; border-top: 1px solid var(--border-color); background: var(--bg-card);">
+      <p style="margin:0; font-size:0.95rem;">
+        <strong>Enunciado:</strong> Se deja caer una esfera de acero desde la azotea de un edificio a una altura de $y_0 = 19.6\text{ m}$ del suelo, partiendo del reposo ($v_0 = 0$). Considerando caída libre ideal sin fricción del aire con $g = 9.8\text{ m/s}^2$, calcula el tiempo que tarda en llegar al suelo y su velocidad justo antes de impactar.
+      </p>
+    </div>
+    <div class="solution-panel" id="prob-6">
+      <div class="step-item">
+        <div class="step-label">1. Datos Conocidos</div>
+        <div class="step-body">$y_0 = 19.6\text{ m}$, $v_{0y} = 0$, $y_f = 0$ (nivel del suelo), $g = 9.8\text{ m/s}^2$ ($a_y = -9.8\text{ m/s}^2$).</div>
+      </div>
+      <div class="step-item">
+        <div class="step-label">2. Incógnitas</div>
+        <div class="step-body">Tiempo de caída ($t_{\text{caída}} = ?$) y velocidad de impacto ($v_y = ?$).</div>
+      </div>
+      <div class="step-item">
+        <div class="step-label">3. Sistema de Referencia</div>
+        <div class="step-body">Eje vertical $y$, origen en el suelo ($y = 0$). Sentido positivo hacia arriba. Por ende, la aceleración gravitatoria es $a_y = -g = -9.8\text{ m/s}^2$.</div>
+      </div>
+      <div class="step-item">
+        <div class="step-label">4. Ecuaciones Físicas</div>
+        <div class="step-body">
+          $$y(t) = y_0 + v_{0y}t - \frac{1}{2}gt^2$$
+          $$v_y(t) = v_{0y} - gt$$
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-label">5. Sustitución Numérica</div>
+        <div class="step-body">
+          Al llegar al suelo ($y = 0$):
+          $$0 = 19.6 - \frac{1}{2}(9.8)t^2 \implies 4.9t^2 = 19.6 \implies t^2 = \frac{19.6}{4.9} = 4 \implies t = 2\text{ s}$$
+          Velocidad de impacto:
+          $$v_y = 0 - (9.8)(2) = -19.6\text{ m/s}$$
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-label">6. Resultados con Unidades</div>
+        <div class="step-body">
+          <strong style="color:var(--yellow); font-size:1.05rem;">Tiempo de Caída: $t = 2.0\text{ s}$</strong> | 
+          <strong style="color:var(--green); font-size:1.05rem;">Velocidad de impacto: $v_y = -19.6\text{ m/s}$ (Rapidez: $19.6\text{ m/s}$)</strong>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-label">7. Interpretación Física</div>
+        <div class="step-body">El signo negativo de la velocidad confirma que la esfera se desplaza hacia abajo al momento del contacto. La rapidez al golpear el suelo ($19.6\text{ m/s} \approx 70.5\text{ km/h}$) ilustra la aceleración constante producida por la gravedad.</div>
+      </div>
+      <div class="step-item">
+        <div class="step-label">8. Comprobación Alternativa</div>
+        <div class="step-body">Vía Torricelli vertical: $v_y^2 = v_{0y}^2 - 2g(y_f - y_0) = 0 - 2(9.8)(0 - 19.6) = 2(9.8)(19.6) = 384.16$. Extrayendo raíz cuadrada: $|v_y| = \sqrt{384.16} = 19.6\text{ m/s}$. ¡Exactitud matemática comprobada!</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- MODULE VIII: Errores Conceptuales Frecuentes -->
+<section id="mod-8" class="module-section">
+  <div class="module-hero">
+    <span class="module-tag">Módulo VIII</span>
+    <h1 class="module-title">Errores Conceptuales Frecuentes</h1>
+    <p class="module-desc">
+      Pon a prueba tus modelos mentales intuitivos. En física, el sentido común cotidiano suele conducir a errores graves. 
+      Evalúa las 10 afirmaciones y descubre si son Verdaderas o Falsas.
+    </p>
+  </div>
+
+  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem;">
+    <div style="font-size:1.1rem; font-weight:700;">
+      Tu Puntuación: <span id="m8-score" style="color:var(--cyan);">0</span> / 10
+    </div>
+    <button class="btn btn-outline btn-sm" id="m8-reset-btn">Reiniciar Tarjetas</button>
+  </div>
+
+  <div id="m8-cards-container">
+    <!-- Populated or styled cards -->
+  </div>
+</section>
+
+
+<!-- MODULE IX: Quiz Interactivo de Evaluación -->
+<section id="mod-9" class="module-section">
+  <div class="module-hero">
+    <span class="module-tag">Módulo IX</span>
+    <h1 class="module-title">Quiz Interactivo de Cinemática 1D</h1>
+    <p class="module-desc">
+      Evaluación integral formativa con 15 preguntas de opción múltiple organizadas en niveles Básico, Intermedio y Avanzado.
+      Recibe retroalimentación inmediata paso a paso y tu certificación de dominio al finalizar.
+    </p>
+  </div>
+
+  <!-- Quiz Card Wrapper -->
+  <div class="quiz-card" id="quiz-wrapper">
+    <!-- Progress Indicator -->
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem;">
+      <span style="font-size:0.85rem; font-weight:700; color:var(--cyan);" id="quiz-q-num">Pregunta 1 de 15</span>
+      <span style="font-size:0.85rem; color:var(--text-secondary);" id="quiz-q-level">Nivel Básico</span>
+      <span style="font-size:0.85rem; font-weight:700; color:var(--yellow);" id="quiz-q-score">Puntaje: 0</span>
+    </div>
+    <div class="quiz-progress-bar-wrap">
+      <div class="quiz-progress-bar" id="quiz-progress"></div>
+    </div>
+
+    <!-- Question View -->
+    <div id="quiz-question-box">
+      <h3 class="quiz-question-title" id="quiz-title">Enunciado de la pregunta...</h3>
+      <div class="quiz-options" id="quiz-options">
+        <!-- Rendered options -->
+      </div>
+
+      <!-- Feedback Banner -->
+      <div class="quiz-feedback" id="quiz-feedback">
+        <!-- Populated on check -->
+      </div>
+
+      <div style="display:flex; gap:1rem;">
+        <button class="btn btn-cyan" id="quiz-check-btn">Comprobar Respuesta</button>
+        <button class="btn btn-outline" id="quiz-next-btn" style="display:none;">Siguiente Pregunta ➔</button>
+      </div>
+    </div>
+
+    <!-- Final Result Screen (hidden initially) -->
+    <div id="quiz-result-box" style="display:none; text-align:center; padding:1.5rem 0;">
+      <div style="font-size:4rem; margin-bottom:0.5rem;" id="quiz-result-emoji">🏆</div>
+      <h2 style="font-size:1.8rem; margin-bottom:0.5rem;" id="quiz-result-title">¡Evaluación Completada!</h2>
+      <p style="font-size:1.1rem; color:var(--text-secondary); margin-bottom:1.5rem;" id="quiz-result-desc">Tu resultado final:</p>
+      
+      <div style="display:inline-flex; align-items:center; gap:2rem; background:var(--bg-secondary); border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:1.25rem 2.5rem; margin-bottom:1.5rem;">
+        <div>
+          <div style="font-size:0.85rem; text-transform:uppercase; color:var(--text-secondary);">Aciertos</div>
+          <div style="font-size:2rem; font-weight:800; color:var(--cyan);" id="quiz-result-score">15 / 15</div>
+        </div>
+        <div style="width:1px; height:45px; background:var(--border-color);"></div>
+        <div>
+          <div style="font-size:0.85rem; text-transform:uppercase; color:var(--text-secondary);">Porcentaje</div>
+          <div style="font-size:2rem; font-weight:800; color:var(--green);" id="quiz-result-pct">100%</div>
+        </div>
+      </div>
+
+      <div>
+        <button class="btn btn-cyan" id="quiz-retry-btn">
+          🔄 Repetir Evaluación
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- MODULE X: Resumen y Formulario -->
+<section id="mod-10" class="module-section">
+  <div class="module-hero">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:1rem;">
+      <div>
+        <span class="module-tag">Módulo X</span>
+        <h1 class="module-title">Formulario y Resumen Teórico</h1>
+        <p class="module-desc">
+          Guía de referencia rápida y formulario integral de cinemática unidimensional en formato imprimible de alta densidad.
+        </p>
+      </div>
+      <button class="btn btn-cyan no-print" onclick="window.print()">
+        🖨️ Imprimir Formulario
+      </button>
+    </div>
+  </div>
+
+  <div class="formula-grid">
+    <!-- Card 1 -->
+    <div class="formula-card">
+      <div class="formula-card-title">1. Fundamentos & Vectores</div>
+      <p><strong>Posición:</strong> $x$ (con signo respecto al origen $O$).</p>
+      <p><strong>Desplazamiento:</strong></p>
+      $$\Delta x = x_f - x_i$$
+      <p><strong>Distancia total:</strong> $d = \sum |\Delta x_k| \ge |\Delta x|$.</p>
+      <p><strong>Velocidad Media:</strong></p>
+      $$v_{\text{med}} = \frac{\Delta x}{\Delta t}$$
+      <p><strong>Rapidez Media:</strong> $v_{\text{rap,med}} = \frac{d_{\text{total}}}{\Delta t} \ge |v_{\text{med}}|$.</p>
+    </div>
+
+    <!-- Card 2 -->
+    <div class="formula-card">
+      <div class="formula-card-title">2. Aceleración Media</div>
+      <p>Ritmo de variación temporal del vector velocidad:</p>
+      $$a_{\text{med}} = \frac{\Delta v}{\Delta t} = \frac{v_f - v_i}{t_f - t_i}$$
+      <p><strong>Unidades SI:</strong> $\text{m/s}^2 = \text{m}\cdot\text{s}^{-2}$.</p>
+      <p><strong>Criterio de Rapidez:</strong></p>
+      <ul style="padding-left:1.2rem; font-size:0.85rem; color:var(--text-secondary);">
+        <li>Si $\text{signo}(v) = \text{signo}(a) \implies$ <strong>Acelera</strong> (rapidez aumenta).</li>
+        <li>Si $\text{signo}(v) \ne \text{signo}(a) \implies$ <strong>Frena</strong> (rapidez disminuye).</li>
+      </ul>
+    </div>
+
+    <!-- Card 3 -->
+    <div class="formula-card">
+      <div class="formula-card-title">3. MRU ($v = \text{cte}, a = 0$)</div>
+      <p><strong>Ecuación de Posición:</strong></p>
+      $$x(t) = x_0 + v \cdot t$$
+      <p><strong>Desplazamiento:</strong></p>
+      $$\Delta x = v \cdot \Delta t$$
+      <p><strong>Gráficas:</strong></p>
+      <ul style="padding-left:1.2rem; font-size:0.85rem; color:var(--text-secondary);">
+        <li>$x-t$: Recta con pendiente $m = v$.</li>
+        <li>$v-t$: Recta horizontal a la altura $v$.</li>
+        <li>$a-t$: Recta sobre el eje cero ($a \equiv 0$).</li>
+      </ul>
+    </div>
+
+    <!-- Card 4 -->
+    <div class="formula-card">
+      <div class="formula-card-title">4. MRUV ($a = \text{cte} \ne 0$)</div>
+      <p><strong>1. Velocidad:</strong> $v(t) = v_0 + a \cdot t$</p>
+      <p><strong>2. Posición:</strong></p>
+      $$x(t) = x_0 + v_0 \cdot t + \frac{1}{2}a \cdot t^2$$
+      <p><strong>3. Torricelli:</strong> $v^2 = v_0^2 + 2a\Delta x$</p>
+      <p><strong>4. Velocidad Media:</strong> $v_{\text{med}} = \frac{v_0 + v}{2}$</p>
+      <p><strong>5. Desplazamiento:</strong> $\Delta x = \left(\frac{v_0 + v}{2}\right) t$</p>
+    </div>
+
+    <!-- Card 5 -->
+    <div class="formula-card">
+      <div class="formula-card-title">5. Caída Libre ($a_y = -g$)</div>
+      <p>Eje vertical orientado positivamente hacia arriba:</p>
+      $$v_y(t) = v_{0y} - g \cdot t$$
+      $$y(t) = y_0 + v_{0y}t - \frac{1}{2}gt^2$$
+      $$v_y^2 = v_{0y}^2 - 2g(y - y_0)$$
+      <p><strong>Punto más alto ($v_y = 0$):</strong></p>
+      $$t_{\text{subida}} = \frac{v_{0y}}{g}, \quad y_{\max} = y_0 + \frac{v_{0y}^2}{2g}$$
+      <p><em>Gravedad estándar:</em> $g = 9.80\text{ m/s}^2$.</p>
+    </div>
+
+    <!-- Card 6 -->
+    <div class="formula-card">
+      <div class="formula-card-title">6. Propiedades de las Gráficas</div>
+      <p><strong>Pendiente de la secante en $x-t$:</strong> Velocidad media.</p>
+      <p><strong>Pendiente de la recta en $v-t$:</strong> Aceleración ($a$).</p>
+      <p><strong>Área bajo la curva en $v-t$:</strong> Desplazamiento neto ($\Delta x$).</p>
+      <p><strong>Área bajo la curva en $a-t$:</strong> Cambio de velocidad ($\Delta v$).</p>
+    </div>
+
+    <!-- Card 7 -->
+    <div class="formula-card">
+      <div class="formula-card-title">7. Conversión de Unidades SI</div>
+      <p><strong>Velocidad:</strong></p>
+      $$1\text{ km/h} = \frac{1000\text{ m}}{3600\text{ s}} = \frac{1}{3.6}\text{ m/s} \approx 0.278\text{ m/s}$$
+      $$1\text{ m/s} = 3.6\text{ km/h}$$
+      <p><strong>Aceleración:</strong></p>
+      $$1\text{ g} \approx 9.80665\text{ m/s}^2$$
+    </div>
+
+    <!-- Card 8 -->
+    <div class="formula-card">
+      <div class="formula-card-title">8. Consejos Metodológicos</div>
+      <ul style="padding-left:1.2rem; font-size:0.85rem; color:var(--text-secondary);">
+        <li>1. Traza siempre el eje y marca el origen $O$ y el sentido positivo (+).</li>
+        <li>2. Escribe los signos de $v_0$ y $a$ de acuerdo al eje elegido.</li>
+        <li>3. Revisa la homogeneidad dimensional de cada término antes de operar.</li>
+        <li>4. Comprueba los resultados mediante una ecuación alternativa (ej. Torricelli).</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+    </main>
+  </div>
+
+  <!-- Inline Application Logic -->
+  <script>
+
+// ==========================================================================
+// CINEMÁTICA 1D - CORE JAVASCRIPT APPLICATION LOGIC
+// ==========================================================================
+
+// --- KaTeX Helper ---
+function renderMath(element) {
+  if (window.renderMathInElement) {
+    try {
+      renderMathInElement(element || document.body, {
+        delimiters: [
+          { left: "$$", right: "$$", display: true },
+          { left: "\\[", right: "\\]", display: true },
+          { left: "$", right: "$", display: false },
+          { left: "\\(", right: "\\)", display: false }
+        ],
+        throwOnError: false
+      });
+    } catch (e) {
+      console.warn("KaTeX render error:", e);
+    }
+  }
+}
+
+// Global Chart.js dark theme defaults
+function initChartDefaults() {
+  if (typeof Chart === 'undefined') return;
+  Chart.defaults.color = '#8899bb';
+  Chart.defaults.borderColor = '#1e2d4a';
+  Chart.defaults.font.family = "'Inter', sans-serif";
+  Chart.defaults.font.size = 11;
+  Chart.defaults.plugins.legend.display = false;
+  Chart.defaults.plugins.tooltip.backgroundColor = '#0f1629';
+  Chart.defaults.plugins.tooltip.titleColor = '#e8eaf6';
+  Chart.defaults.plugins.tooltip.borderColor = '#1e2d4a';
+  Chart.defaults.plugins.tooltip.borderWidth = 1;
+}
+
+// Chart creation helper
+// fill: false → lineas sin areas sombreadas (evita confusion en estudiantes)
+// fillArea: true → solo cuando se quiere mostrar didacticamente el area bajo v-t
+function createLineChart(canvasId, label, color, xLabel, yLabel, fillArea) {
+  const ctx = document.getElementById(canvasId);
+  if (!ctx) return null;
+
+  // Plugin interno: linea discontinua en y=0 para referencia visual
+  const zeroLinePlugin = {
+    id: 'zeroLine_' + canvasId,
+    afterDraw(chart) {
+      const yScale = chart.scales.y;
+      if (!yScale) return;
+      const y0 = yScale.getPixelForValue(0);
+      if (y0 < chart.chartArea.top || y0 > chart.chartArea.bottom) return;
+      const ctxC = chart.ctx;
+      ctxC.save();
+      ctxC.beginPath();
+      ctxC.moveTo(chart.chartArea.left, y0);
+      ctxC.lineTo(chart.chartArea.right, y0);
+      ctxC.strokeStyle = 'rgba(136, 153, 187, 0.40)';
+      ctxC.lineWidth = 1;
+      ctxC.setLineDash([5, 4]);
+      ctxC.stroke();
+      ctxC.restore();
+    }
+  };
+
+  return new Chart(ctx, {
+    type: 'line',
+    plugins: [zeroLinePlugin],
+    data: {
+      datasets: [
+        {
+          label: label,
+          data: [],
+          borderColor: color,
+          backgroundColor: fillArea ? color.replace('1)', '0.10)') : 'transparent',
+          borderWidth: 2.5,
+          tension: 0.1,
+          pointRadius: 0,
+          pointHoverRadius: 0,
+          fill: fillArea ? 'origin' : false
+        },
+        {
+          label: 'Punto Actual',
+          data: [],
+          borderColor: '#ffffff',
+          backgroundColor: color,
+          borderWidth: 2,
+          pointRadius: 6,
+          pointHoverRadius: 8,
+          pointStyle: 'circle',
+          showLine: false,
+          fill: false
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: false,
+      interaction: { mode: 'nearest', intersect: false },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: function(context) {
+              return context.parsed.y.toFixed(3);
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          type: 'linear',
+          title: { display: true, text: xLabel, color: '#8899bb', font: { size: 11, weight: '500' } },
+          grid: { color: 'rgba(30, 45, 74, 0.55)', lineWidth: 1 },
+          ticks: { color: '#8899bb', font: { size: 10 } }
+        },
+        y: {
+          title: { display: true, text: yLabel, color: '#8899bb', font: { size: 11, weight: '500' } },
+          grid: { color: 'rgba(30, 45, 74, 0.55)', lineWidth: 1 },
+          ticks: { color: '#8899bb', font: { size: 10 } }
+        }
+      }
+    }
+  });
+}
+
+// ==========================================================================
+// MODULE 5 — AREA TOGGLE (v-t chart pedagogical fill)
+// ==========================================================================
+let m5AreaVisible = false;
+function m5ToggleArea() {
+  m5AreaVisible = !m5AreaVisible;
+  const btn = document.getElementById('m5-toggle-area-btn');
+  const label = document.getElementById('m5-area-label');
+  const chart = Module5Graphs ? Module5Graphs.chartVt : null;
+
+  if (!chart) return;
+
+  // Toggle fill on the main dataset
+  chart.data.datasets[0].fill = m5AreaVisible ? 'origin' : false;
+  chart.data.datasets[0].backgroundColor = m5AreaVisible
+    ? 'rgba(76,175,80,0.12)' : 'transparent';
+  chart.update('none');
+
+  if (btn) {
+    btn.textContent = m5AreaVisible ? '🔲 Ocultar área' : '📐 Mostrar área = desplazamiento';
+    btn.style.background = m5AreaVisible ? 'rgba(76,175,80,0.15)' : 'transparent';
+  }
+  if (label) {
+    label.style.display = m5AreaVisible ? 'block' : 'none';
+  }
+}
+// ==========================================================================
+// NAVIGATION & SIDEBAR
+// ==========================================================================
+function initNavigation() {
+  const navItems = document.querySelectorAll('.nav-item');
+  const sections = document.querySelectorAll('.module-section');
+  const sidebar = document.getElementById('sidebar');
+  const backdrop = document.getElementById('sidebar-backdrop');
+  const menuToggle = document.getElementById('menu-toggle');
+
+  function switchTab(modId) {
+    navItems.forEach(item => {
+      if (item.dataset.mod === modId) {
+        item.classList.add('active');
+      } else {
+        item.classList.remove('active');
+      }
+    });
+
+    sections.forEach(sec => {
+      if (sec.id === modId) {
+        sec.classList.add('active');
+      } else {
+        sec.classList.remove('active');
+      }
+    });
+
+    // Close mobile menu
+    if (sidebar) sidebar.classList.remove('open');
+    if (backdrop) backdrop.classList.remove('open');
+
+    // Trigger Chart.js resize
+    window.dispatchEvent(new Event('resize'));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  navItems.forEach(item => {
+    item.addEventListener('click', () => {
+      switchTab(item.dataset.mod);
+    });
+  });
+
+  if (menuToggle) {
+    menuToggle.addEventListener('click', () => {
+      sidebar.classList.toggle('open');
+      backdrop.classList.toggle('open');
+    });
+  }
+
+  if (backdrop) {
+    backdrop.addEventListener('click', () => {
+      sidebar.classList.remove('open');
+      backdrop.classList.remove('open');
+    });
+  }
+}
+
+// ==========================================================================
+// MODULE I: DEMO PERSONA EN LA RECTA NUMÉRICA
+// ==========================================================================
+const Module1Demo = {
+  xi: -10,
+  xret: 15,
+  xf: 5,
+  animPos: -10,
+  animPhase: 0, // 0: stopped, 1: xi -> xret, 2: xret -> xf
+  animSpeed: 0.25, // meters per frame
+  animReq: null,
+
+  init() {
+    this.canvas = document.getElementById('m1-canvas');
+    if (!this.canvas) return;
+    this.ctx = this.canvas.getContext('2d');
+
+    this.xiInput = document.getElementById('m1-xi');
+    this.xretInput = document.getElementById('m1-xret');
+    this.xfInput = document.getElementById('m1-xf');
+
+    this.xiVal = document.getElementById('m1-xi-val');
+    this.xretVal = document.getElementById('m1-xret-val');
+    this.xfVal = document.getElementById('m1-xf-val');
+
+    this.t1Val = document.getElementById('m1-t1-val');
+    this.t2Val = document.getElementById('m1-t2-val');
+    this.distVal = document.getElementById('m1-dist-val');
+    this.dispVal = document.getElementById('m1-disp-val');
+
+    const updateFromSliders = () => {
+      this.xi = parseFloat(this.xiInput.value);
+      this.xret = parseFloat(this.xretInput.value);
+      this.xf = parseFloat(this.xfInput.value);
+      this.animPos = this.xi;
+      this.animPhase = 0;
+      if (this.animReq) cancelAnimationFrame(this.animReq);
+      this.updateMetrics();
+      this.render();
+    };
+
+    this.xiInput.addEventListener('input', updateFromSliders);
+    this.xretInput.addEventListener('input', updateFromSliders);
+    this.xfInput.addEventListener('input', updateFromSliders);
+
+    document.getElementById('m1-play-btn').addEventListener('click', () => {
+      this.startAnimation();
+    });
+
+    document.getElementById('m1-reset-btn').addEventListener('click', () => {
+      this.xiInput.value = -10;
+      this.xretInput.value = 15;
+      this.xfInput.value = 5;
+      updateFromSliders();
+    });
+
+    window.addEventListener('resize', () => {
+      this.resizeCanvas();
+      this.render();
+    });
+
+    this.resizeCanvas();
+    updateFromSliders();
+  },
+
+  resizeCanvas() {
+    if (!this.canvas) return;
+    const rect = this.canvas.parentElement.getBoundingClientRect();
+    this.canvas.width = rect.width;
+    this.canvas.height = 230;
+  },
+
+  updateMetrics() {
+    const dx1 = this.xret - this.xi;
+    const d1 = Math.abs(dx1);
+    const dx2 = this.xf - this.xret;
+    const d2 = Math.abs(dx2);
+    const dTotal = d1 + d2;
+    const dxNeto = this.xf - this.xi;
+
+    this.xiVal.textContent = `${this.xi} m`;
+    this.xretVal.textContent = `${this.xret} m`;
+    this.xfVal.textContent = `${this.xf} m`;
+
+    this.t1Val.innerHTML = `$\Delta x_1 = ${dx1 >= 0 ? '+' : ''}${dx1}\text{ m}$ ($d_1 = ${d1}\text{ m}$)`;
+    this.t2Val.innerHTML = `$\Delta x_2 = ${dx2 >= 0 ? '+' : ''}${dx2}\text{ m}$ ($d_2 = ${d2}\text{ m}$)`;
+    this.distVal.textContent = `${dTotal} m`;
+    this.dispVal.textContent = `${dxNeto >= 0 ? '+' : ''}${dxNeto} m`;
+
+    renderMath(this.t1Val);
+    renderMath(this.t2Val);
+  },
+
+  startAnimation() {
+    if (this.animReq) cancelAnimationFrame(this.animReq);
+    this.animPos = this.xi;
+    this.animPhase = 1;
+
+    const step = () => {
+      if (this.animPhase === 1) {
+        const dir = Math.sign(this.xret - this.xi) || 1;
+        this.animPos += dir * this.animSpeed;
+        if ((dir > 0 && this.animPos >= this.xret) || (dir < 0 && this.animPos <= this.xret)) {
+          this.animPos = this.xret;
+          this.animPhase = 2;
+        }
+      } else if (this.animPhase === 2) {
+        const dir = Math.sign(this.xf - this.xret) || 1;
+        this.animPos += dir * this.animSpeed;
+        if ((dir > 0 && this.animPos >= this.xf) || (dir < 0 && this.animPos <= this.xf)) {
+          this.animPos = this.xf;
+          this.animPhase = 0;
+        }
+      }
+
+      this.render();
+
+      if (this.animPhase !== 0) {
+        this.animReq = requestAnimationFrame(step);
+      }
+    };
+    this.animReq = requestAnimationFrame(step);
+  },
+
+  toScreenX(worldX) {
+    const margin = 50;
+    const w = this.canvas.width - margin * 2;
+    const minX = -25;
+    const maxX = 25;
+    return margin + ((worldX - minX) / (maxX - minX)) * w;
+  },
+
+  drawArrow(ctx, fromX, fromY, toX, toY, color, width = 2, dashed = false) {
+    if (Math.abs(fromX - toX) < 1) return;
+    ctx.save();
+    ctx.strokeStyle = color;
+    ctx.fillStyle = color;
+    ctx.lineWidth = width;
+    if (dashed) ctx.setLineDash([6, 4]);
+
+    ctx.beginPath();
+    ctx.moveTo(fromX, fromY);
+    ctx.lineTo(toX, toY);
+    ctx.stroke();
+
+    // Arrowhead
+    ctx.setLineDash([]);
+    const headLen = 9;
+    const angle = Math.atan2(toY - fromY, toX - fromX);
+    ctx.beginPath();
+    ctx.moveTo(toX, toY);
+    ctx.lineTo(toX - headLen * Math.cos(angle - Math.PI / 6), toY - headLen * Math.sin(angle - Math.PI / 6));
+    ctx.lineTo(toX - headLen * Math.cos(angle + Math.PI / 6), toY - headLen * Math.sin(angle + Math.PI / 6));
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+  },
+
+  render() {
+    const ctx = this.ctx;
+    const w = this.canvas.width;
+    const h = this.canvas.height;
+    ctx.clearRect(0, 0, w, h);
+
+    const axisY = 120;
+
+    // Background track line
+    ctx.strokeStyle = '#1e2d4a';
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.moveTo(30, axisY);
+    ctx.lineTo(w - 30, axisY);
+    ctx.stroke();
+
+    // Ticks & numbers
+    ctx.font = '11px Consolas, monospace';
+    ctx.textAlign = 'center';
+    for (let x = -25; x <= 25; x += 5) {
+      const sx = this.toScreenX(x);
+      ctx.strokeStyle = x === 0 ? '#00bcd4' : '#4a5d7e';
+      ctx.lineWidth = x === 0 ? 3 : 1.5;
+      ctx.beginPath();
+      ctx.moveTo(sx, axisY - 8);
+      ctx.lineTo(sx, axisY + 8);
+      ctx.stroke();
+
+      ctx.fillStyle = x === 0 ? '#00bcd4' : '#8899bb';
+      ctx.fillText(`${x}m`, sx, axisY + 24);
+    }
+
+    // Origin Marker O
+    const ox = this.toScreenX(0);
+    ctx.fillStyle = '#00bcd4';
+    ctx.font = 'bold 12px Inter, sans-serif';
+    ctx.fillText('Origen (O)', ox, axisY - 16);
+
+    // Segment 1 Vector (xi -> xret) at y = 70
+    const sXi = this.toScreenX(this.xi);
+    const sXret = this.toScreenX(this.xret);
+    const sXf = this.toScreenX(this.xf);
+
+    this.drawArrow(ctx, sXi, 65, sXret, 65, '#e91e9e', 2.5, false);
+    ctx.fillStyle = '#e91e9e';
+    ctx.font = 'bold 11px Inter, sans-serif';
+    ctx.fillText(`Tramo 1 (Δx₁ = ${this.xret - this.xi >= 0 ? '+' : ''}${this.xret - this.xi}m)`, (sXi + sXret) / 2, 55);
+
+    // Segment 2 Vector (xret -> xf) at y = 90
+    this.drawArrow(ctx, sXret, 85, sXf, 85, '#e91e9e', 2.5, true);
+    ctx.fillText(`Tramo 2 (Δx₂ = ${this.xf - this.xret >= 0 ? '+' : ''}${this.xf - this.xret}m)`, (sXret + sXf) / 2, 100);
+
+    // Net Displacement Vector (xi -> xf) at y = 175
+    this.drawArrow(ctx, sXi, 175, sXf, 175, '#00bcd4', 3.5, false);
+    ctx.fillStyle = '#00bcd4';
+    ctx.font = 'bold 12px Inter, sans-serif';
+    ctx.fillText(`Desplazamiento Neto Δx = ${this.xf - this.xi >= 0 ? '+' : ''}${this.xf - this.xi}m`, (sXi + sXf) / 2, 195);
+
+    // Initial marker circle
+    ctx.fillStyle = '#8899bb';
+    ctx.beginPath();
+    ctx.arc(sXi, axisY, 6, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Turnaround marker
+    ctx.fillStyle = '#e91e9e';
+    ctx.beginPath();
+    ctx.arc(sXret, axisY, 6, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Final marker
+    ctx.fillStyle = '#00bcd4';
+    ctx.beginPath();
+    ctx.arc(sXf, axisY, 6, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Animated Runner Particle
+    const sCurr = this.toScreenX(this.animPos);
+    ctx.save();
+    ctx.shadowColor = '#ffeb3b';
+    ctx.shadowBlur = 12;
+    ctx.fillStyle = '#ffeb3b';
+    ctx.beginPath();
+    ctx.arc(sCurr, axisY, 10, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+
+    // Runner label
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 11px Inter, sans-serif';
+    ctx.fillText('🏃', sCurr, axisY + 4);
+    ctx.fillText(`x = ${this.animPos.toFixed(1)}m`, sCurr, axisY - 14);
+  }
+};
+
+// ==========================================================================
+// MODULE II: SISTEMA DE REFERENCIA Y MOVIMIENTO
+// ==========================================================================
+const Module2Sim = {
+  xi: -30,
+  xf: 35,
+  duration: 8,
+  scale: 1.0,
+  time: 0,
+  running: false,
+  animId: null,
+  lastTimestamp: null,
+
+  init() {
+    this.canvas = document.getElementById('m2-canvas');
+    if (!this.canvas) return;
+    this.ctx = this.canvas.getContext('2d');
+
+    this.xiInput = document.getElementById('m2-xi');
+    this.xfInput = document.getElementById('m2-xf');
+    this.dtInput = document.getElementById('m2-dt');
+    this.scaleInput = document.getElementById('m2-scale');
+
+    this.xiVal = document.getElementById('m2-xi-val');
+    this.xfVal = document.getElementById('m2-xf-val');
+    this.dtVal = document.getElementById('m2-dt-val');
+    this.scaleVal = document.getElementById('m2-scale-val');
+
+    this.hudX = document.getElementById('m2-x-now');
+    this.hudT = document.getElementById('m2-t-now');
+    this.hudDx = document.getElementById('m2-dx-now');
+    this.hudDir = document.getElementById('m2-dir-now');
+
+    const updateControls = () => {
+      this.xi = parseFloat(this.xiInput.value);
+      this.xf = parseFloat(this.xfInput.value);
+      this.duration = parseFloat(this.dtInput.value);
+      this.scale = parseFloat(this.scaleInput.value);
+
+      this.xiVal.textContent = `${this.xi} m`;
+      this.xfVal.textContent = `${this.xf} m`;
+      this.dtVal.textContent = `${this.duration} s`;
+      this.scaleVal.textContent = `${this.scale.toFixed(2)}x`;
+
+      this.time = 0;
+      this.running = false;
+      if (this.animId) cancelAnimationFrame(this.animId);
+      this.updateHud();
+      this.render();
+    };
+
+    this.xiInput.addEventListener('input', updateControls);
+    this.xfInput.addEventListener('input', updateControls);
+    this.dtInput.addEventListener('input', updateControls);
+    this.scaleInput.addEventListener('input', updateControls);
+
+    document.getElementById('m2-play-btn').addEventListener('click', () => {
+      if (this.time >= this.duration) this.time = 0;
+      this.running = true;
+      this.lastTimestamp = performance.now();
+      this.loop();
+    });
+
+    document.getElementById('m2-pause-btn').addEventListener('click', () => {
+      this.running = false;
+    });
+
+    document.getElementById('m2-reset-btn').addEventListener('click', () => {
+      this.running = false;
+      this.time = 0;
+      this.updateHud();
+      this.render();
+    });
+
+    window.addEventListener('resize', () => {
+      this.resizeCanvas();
+      this.render();
+    });
+
+    this.resizeCanvas();
+    updateControls();
+  },
+
+  resizeCanvas() {
+    if (!this.canvas) return;
+    const rect = this.canvas.parentElement.getBoundingClientRect();
+    this.canvas.width = rect.width;
+    this.canvas.height = 340;
+  },
+
+  loop() {
+    if (!this.running) return;
+    const now = performance.now();
+    const dt = (now - this.lastTimestamp) / 1000;
+    this.lastTimestamp = now;
+
+    this.time += dt;
+    if (this.time >= this.duration) {
+      this.time = this.duration;
+      this.running = false;
+    }
+
+    this.updateHud();
+    this.render();
+
+    if (this.running) {
+      this.animId = requestAnimationFrame(() => this.loop());
+    }
+  },
+
+  getPosAt(t) {
+    const fraction = Math.min(1, Math.max(0, t / this.duration));
+    return this.xi + (this.xf - this.xi) * fraction;
+  },
+
+  updateHud() {
+    const currentX = this.getPosAt(this.time);
+    const dx = currentX - this.xi;
+    const dir = this.xf >= this.xi ? 'Hacia la Derecha (+)' : 'Hacia la Izquierda (-)';
+
+    this.hudX.textContent = `${currentX >= 0 ? '+' : ''}${currentX.toFixed(1)} m`;
+    this.hudT.textContent = `${this.time.toFixed(2)} s`;
+    this.hudDx.textContent = `${dx >= 0 ? '+' : ''}${dx.toFixed(1)} m`;
+    this.hudDir.textContent = dir;
+  },
+
+  toScreenX(worldX) {
+    const cx = this.canvas.width / 2;
+    const pixelsPerMeter = (this.canvas.width / 110) * this.scale;
+    return cx + worldX * pixelsPerMeter;
+  },
+
+  render() {
+    const ctx = this.ctx;
+    const w = this.canvas.width;
+    const h = this.canvas.height;
+    ctx.clearRect(0, 0, w, h);
+
+    const axisY = 170;
+
+    // Track line
+    ctx.strokeStyle = '#1e2d4a';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(20, axisY);
+    ctx.lineTo(w - 20, axisY);
+    ctx.stroke();
+
+    // Axis ticks (-50 to +50 m)
+    ctx.font = '10px Consolas, monospace';
+    ctx.textAlign = 'center';
+    for (let x = -50; x <= 50; x += 10) {
+      const sx = this.toScreenX(x);
+      if (sx < 10 || sx > w - 10) continue;
+
+      ctx.strokeStyle = x === 0 ? '#00bcd4' : '#334466';
+      ctx.lineWidth = x === 0 ? 3 : 1;
+      ctx.beginPath();
+      ctx.moveTo(sx, axisY - 8);
+      ctx.lineTo(sx, axisY + 8);
+      ctx.stroke();
+
+      ctx.fillStyle = x === 0 ? '#00bcd4' : '#8899bb';
+      ctx.fillText(`${x}m`, sx, axisY + 22);
+    }
+
+    // Origin Beacon
+    const ox = this.toScreenX(0);
+    ctx.save();
+    ctx.strokeStyle = 'rgba(0, 188, 212, 0.4)';
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath();
+    ctx.moveTo(ox, 30);
+    ctx.lineTo(ox, h - 30);
+    ctx.stroke();
+    ctx.restore();
+
+    ctx.fillStyle = '#00bcd4';
+    ctx.font = 'bold 12px Inter, sans-serif';
+    ctx.fillText('📍 Origen O (x=0)', ox, 45);
+
+    // Current particle position
+    const currentX = this.getPosAt(this.time);
+    const sxCurr = this.toScreenX(currentX);
+    const sxInit = this.toScreenX(this.xi);
+
+    // 1. Position Vector (Cyan arrow from O to particle)
+    Module1Demo.drawArrow(ctx, ox, 100, sxCurr, 100, '#00bcd4', 2.5, false);
+    ctx.fillStyle = '#00bcd4';
+    ctx.font = 'bold 11px Inter, sans-serif';
+    ctx.fillText(`Vector Posición r⃗ = ${currentX >= 0 ? '+' : ''}${currentX.toFixed(1)}m`, (ox + sxCurr) / 2, 90);
+
+    // 2. Displacement Vector (Green arrow from xi to particle)
+    const dx = currentX - this.xi;
+    Module1Demo.drawArrow(ctx, sxInit, 230, sxCurr, 230, '#4caf50', 3, false);
+    ctx.fillStyle = '#4caf50';
+    ctx.font = 'bold 11px Inter, sans-serif';
+    ctx.fillText(`Vector Desplazamiento Δx⃗ = ${dx >= 0 ? '+' : ''}${dx.toFixed(1)}m`, (sxInit + sxCurr) / 2, 250);
+
+    // Glowing Particle
+    ctx.save();
+    ctx.shadowColor = '#00bcd4';
+    ctx.shadowBlur = 16;
+    ctx.fillStyle = '#00bcd4';
+    ctx.beginPath();
+    ctx.arc(sxCurr, axisY, 12, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = '#ffffff';
+    ctx.beginPath();
+    ctx.arc(sxCurr, axisY, 5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+
+    // Particle label
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 11px Inter, sans-serif';
+    ctx.fillText(`Partícula (${currentX.toFixed(1)} m)`, sxCurr, axisY - 18);
+  }
+};
+
+// ==========================================================================
+// MODULE III: MRU (MOVIMIENTO RECTILÍNEO UNIFORME)
+// ==========================================================================
+const Module3MRU = {
+  x0: -20,
+  v: 8,
+  dur: 10,
+  time: 0,
+  running: false,
+  animId: null,
+  lastTimestamp: null,
+  tableData: [],
+
+  init() {
+    this.canvas = document.getElementById('m3-canvas');
+    if (!this.canvas) return;
+    this.ctx = this.canvas.getContext('2d');
+
+    this.x0Input = document.getElementById('m3-x0');
+    this.vInput = document.getElementById('m3-v');
+    this.durInput = document.getElementById('m3-dur');
+
+    this.x0Val = document.getElementById('m3-x0-val');
+    this.vVal = document.getElementById('m3-v-val');
+    this.durVal = document.getElementById('m3-dur-val');
+
+    this.hudX = document.getElementById('m3-hud-x');
+    this.hudV = document.getElementById('m3-hud-v');
+    this.hudT = document.getElementById('m3-hud-t');
+    this.hudDx = document.getElementById('m3-hud-dx');
+
+    this.tbody = document.getElementById('m3-tbody');
+
+    // Init Chart.js instances
+    this.chartXt = createLineChart('m3-chart-xt', 'x(t)', '#00bcd4', 'Tiempo (s)', 'Posición (m)', false);
+    this.chartVt = createLineChart('m3-chart-vt', 'v(t)', '#4caf50', 'Tiempo (s)', 'Velocidad (m/s)', false);
+    this.chartAt = createLineChart('m3-chart-at', 'a(t)', '#ff9800', 'Tiempo (s)', 'Aceleración (m/s²)', false);
+
+    const updateControls = () => {
+      this.x0 = parseFloat(this.x0Input.value);
+      this.v = parseFloat(this.vInput.value);
+      this.dur = parseFloat(this.durInput.value);
+
+      this.x0Val.textContent = `${this.x0} m`;
+      this.vVal.textContent = `${this.v.toFixed(1)} m/s`;
+      this.durVal.textContent = `${this.dur} s`;
+
+      this.resetSim();
+    };
+
+    this.x0Input.addEventListener('input', updateControls);
+    this.vInput.addEventListener('input', updateControls);
+    this.durInput.addEventListener('input', updateControls);
+
+    document.getElementById('m3-play-btn').addEventListener('click', () => {
+      if (this.time >= this.dur) this.resetSim();
+      this.running = true;
+      this.lastTimestamp = performance.now();
+      this.loop();
+    });
+
+    document.getElementById('m3-pause-btn').addEventListener('click', () => {
+      this.running = false;
+    });
+
+    document.getElementById('m3-reset-btn').addEventListener('click', () => {
+      this.resetSim();
+    });
+
+    window.addEventListener('resize', () => {
+      this.resizeCanvas();
+      this.render();
+    });
+
+    this.resizeCanvas();
+    updateControls();
+  },
+
+  resizeCanvas() {
+    if (!this.canvas) return;
+    const rect = this.canvas.parentElement.getBoundingClientRect();
+    this.canvas.width = rect.width;
+    this.canvas.height = 180;
+  },
+
+  resetSim() {
+    this.running = false;
+    this.time = 0;
+    if (this.animId) cancelAnimationFrame(this.animId);
+    this.tableData = [];
+    this.tbody.innerHTML = '';
+    this.addTableRow(0, this.x0, 0, this.v, 0);
+    this.updateChartsCurve();
+    this.updateHud();
+    this.render();
+  },
+
+  updateChartsCurve() {
+    const ptsX = [];
+    const ptsV = [];
+    const ptsA = [];
+    const steps = 40;
+    for (let i = 0; i <= steps; i++) {
+      const t = (i / steps) * this.dur;
+      const x = this.x0 + this.v * t;
+      ptsX.push({ x: t, y: x });
+      ptsV.push({ x: t, y: this.v });
+      ptsA.push({ x: t, y: 0 });
+    }
+
+    if (this.chartXt) {
+      this.chartXt.data.datasets[0].data = ptsX;
+      this.chartXt.data.datasets[1].data = [{ x: 0, y: this.x0 }];
+      this.chartXt.update('none');
+    }
+    if (this.chartVt) {
+      this.chartVt.data.datasets[0].data = ptsV;
+      this.chartVt.data.datasets[1].data = [{ x: 0, y: this.v }];
+      this.chartVt.update('none');
+    }
+    if (this.chartAt) {
+      this.chartAt.data.datasets[0].data = ptsA;
+      this.chartAt.data.datasets[1].data = [{ x: 0, y: 0 }];
+      this.chartAt.update('none');
+    }
+  },
+
+  updateChartPoints() {
+    const currX = this.x0 + this.v * this.time;
+    if (this.chartXt) {
+      this.chartXt.data.datasets[1].data = [{ x: this.time, y: currX }];
+      this.chartXt.update('none');
+    }
+    if (this.chartVt) {
+      this.chartVt.data.datasets[1].data = [{ x: this.time, y: this.v }];
+      this.chartVt.update('none');
+    }
+    if (this.chartAt) {
+      this.chartAt.data.datasets[1].data = [{ x: this.time, y: 0 }];
+      this.chartAt.update('none');
+    }
+  },
+
+  addTableRow(t, x, dx, v, a) {
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td>${t.toFixed(1)}</td>
+      <td>${x.toFixed(2)}</td>
+      <td>${dx >= 0 ? '+' : ''}${dx.toFixed(2)}</td>
+      <td>${v.toFixed(1)}</td>
+      <td>0.0</td>
+    `;
+    this.tbody.appendChild(row);
+  },
+
+  loop() {
+    if (!this.running) return;
+    const now = performance.now();
+    const dt = (now - this.lastTimestamp) / 1000;
+    this.lastTimestamp = now;
+
+    const prevT = this.time;
+    this.time += dt;
+
+    // Check table interval (every 0.5s)
+    if (Math.floor(this.time / 0.5) > Math.floor(prevT / 0.5)) {
+      const snapT = Math.floor(this.time / 0.5) * 0.5;
+      if (snapT <= this.dur) {
+        const snapX = this.x0 + this.v * snapT;
+        const snapDx = snapX - this.x0;
+        this.addTableRow(snapT, snapX, snapDx, this.v, 0);
+      }
+    }
+
+    if (this.time >= this.dur) {
+      this.time = this.dur;
+      this.running = false;
+    }
+
+    this.updateHud();
+    this.updateChartPoints();
+    this.render();
+
+    if (this.running) {
+      this.animId = requestAnimationFrame(() => this.loop());
+    }
+  },
+
+  updateHud() {
+    const currX = this.x0 + this.v * this.time;
+    const dx = currX - this.x0;
+    this.hudX.textContent = `${currX >= 0 ? '+' : ''}${currX.toFixed(1)} m`;
+    this.hudV.textContent = `${this.v >= 0 ? '+' : ''}${this.v.toFixed(1)} m/s`;
+    this.hudT.textContent = `${this.time.toFixed(2)} s`;
+    this.hudDx.textContent = `${dx >= 0 ? '+' : ''}${dx.toFixed(1)} m`;
+  },
+
+  toScreenX(worldX) {
+    const cx = this.canvas.width / 2;
+    const pixelsPerMeter = this.canvas.width / 140;
+    return cx + worldX * pixelsPerMeter;
+  },
+
+  render() {
+    const ctx = this.ctx;
+    const w = this.canvas.width;
+    const h = this.canvas.height;
+    ctx.clearRect(0, 0, w, h);
+
+    const axisY = 100;
+
+    // Track
+    ctx.fillStyle = '#0a1020';
+    ctx.fillRect(0, axisY - 20, w, 40);
+
+    ctx.strokeStyle = '#1e2d4a';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(0, axisY - 20);
+    ctx.lineTo(w, axisY - 20);
+    ctx.moveTo(0, axisY + 20);
+    ctx.lineTo(w, axisY + 20);
+    ctx.stroke();
+
+    // Center dash line
+    ctx.strokeStyle = '#2b3f66';
+    ctx.setLineDash([12, 10]);
+    ctx.beginPath();
+    ctx.moveTo(0, axisY);
+    ctx.lineTo(w, axisY);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Ticks & coordinates
+    ctx.font = '10px Consolas, monospace';
+    ctx.textAlign = 'center';
+    for (let x = -60; x <= 60; x += 10) {
+      const sx = this.toScreenX(x);
+      if (sx < 10 || sx > w - 10) continue;
+
+      ctx.strokeStyle = x === 0 ? '#00bcd4' : '#334466';
+      ctx.lineWidth = x === 0 ? 3 : 1;
+      ctx.beginPath();
+      ctx.moveTo(sx, axisY + 20);
+      ctx.lineTo(sx, axisY + 28);
+      ctx.stroke();
+
+      ctx.fillStyle = x === 0 ? '#00bcd4' : '#8899bb';
+      ctx.fillText(`${x}m`, sx, axisY + 40);
+    }
+
+    // Vehicle
+    const currX = this.x0 + this.v * this.time;
+    const sx = this.toScreenX(currX);
+
+    // Car body
+    ctx.save();
+    ctx.fillStyle = '#00bcd4';
+    ctx.shadowColor = '#00bcd4';
+    ctx.shadowBlur = 10;
+    ctx.beginPath();
+    ctx.roundRect(sx - 20, axisY - 14, 40, 28, 6);
+    ctx.fill();
+
+    // Wheels
+    ctx.fillStyle = '#05101f';
+    ctx.beginPath();
+    ctx.arc(sx - 12, axisY + 14, 5, 0, Math.PI * 2);
+    ctx.arc(sx + 12, axisY + 14, 5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+
+    // Velocity arrow attached to car
+    const vArrowLen = this.v * 4;
+    Module1Demo.drawArrow(ctx, sx, axisY - 24, sx + vArrowLen, axisY - 24, '#4caf50', 2.5, false);
+    ctx.fillStyle = '#4caf50';
+    ctx.font = 'bold 10px Inter, sans-serif';
+    ctx.fillText(`v = ${this.v >= 0 ? '+' : ''}${this.v.toFixed(1)} m/s`, sx + vArrowLen / 2, axisY - 34);
+  }
+};
+
+// ==========================================================================
+// MODULE IV: MRUV (MOVIMIENTO RECTILÍNEO UNIFORMEMENTE VARIADO)
+// ==========================================================================
+const Module4MRUV = {
+  x0: 0,
+  v0: 12,
+  a: -3,
+  dur: 8,
+  time: 0,
+  running: false,
+  animId: null,
+  lastTimestamp: null,
+
+  init() {
+    this.canvas = document.getElementById('m4-canvas');
+    if (!this.canvas) return;
+    this.ctx = this.canvas.getContext('2d');
+
+    this.x0Input = document.getElementById('m4-x0');
+    this.v0Input = document.getElementById('m4-v0');
+    this.aInput = document.getElementById('m4-a');
+    this.durInput = document.getElementById('m4-dur');
+
+    this.x0Val = document.getElementById('m4-x0-val');
+    this.v0Val = document.getElementById('m4-v0-val');
+    this.aVal = document.getElementById('m4-a-val');
+    this.durVal = document.getElementById('m4-dur-val');
+
+    this.hudX = document.getElementById('m4-hud-x');
+    this.hudV = document.getElementById('m4-hud-v');
+    this.hudA = document.getElementById('m4-hud-a');
+    this.hudT = document.getElementById('m4-hud-t');
+    this.hudDx = document.getElementById('m4-hud-dx');
+
+    this.statusBanner = document.getElementById('m4-status-banner');
+    this.statusText = document.getElementById('m4-status-text');
+    this.reversalText = document.getElementById('m4-reversal-text');
+
+    // Init charts
+    this.chartXt = createLineChart('m4-chart-xt', 'x(t)', '#00bcd4', 'Tiempo (s)', 'Posición (m)', false);
+    this.chartVt = createLineChart('m4-chart-vt', 'v(t)', '#4caf50', 'Tiempo (s)', 'Velocidad (m/s)', false);
+    this.chartAt = createLineChart('m4-chart-at', 'a(t)', '#ff9800', 'Tiempo (s)', 'Aceleración (m/s²)', false);
+
+    const updateControls = () => {
+      this.x0 = parseFloat(this.x0Input.value);
+      this.v0 = parseFloat(this.v0Input.value);
+      this.a = parseFloat(this.aInput.value);
+      this.dur = parseFloat(this.durInput.value);
+
+      this.x0Val.textContent = `${this.x0} m`;
+      this.v0Val.textContent = `${this.v0.toFixed(1)} m/s`;
+      this.aVal.textContent = `${this.a.toFixed(1)} m/s²`;
+      this.durVal.textContent = `${this.dur} s`;
+
+      this.resetSim();
+    };
+
+    this.x0Input.addEventListener('input', updateControls);
+    this.v0Input.addEventListener('input', updateControls);
+    this.aInput.addEventListener('input', updateControls);
+    this.durInput.addEventListener('input', updateControls);
+
+    // Preset Buttons
+    document.getElementById('m4-preset-1').addEventListener('click', () => {
+      this.x0Input.value = 0; this.v0Input.value = 2; this.aInput.value = 3; this.durInput.value = 6;
+      updateControls();
+    });
+    document.getElementById('m4-preset-2').addEventListener('click', () => {
+      this.x0Input.value = 0; this.v0Input.value = 12; this.aInput.value = -3; this.durInput.value = 8;
+      updateControls();
+    });
+    document.getElementById('m4-preset-3').addEventListener('click', () => {
+      this.x0Input.value = 20; this.v0Input.value = -2; this.aInput.value = -3; this.durInput.value = 6;
+      updateControls();
+    });
+    document.getElementById('m4-preset-4').addEventListener('click', () => {
+      this.x0Input.value = -10; this.v0Input.value = -12; this.aInput.value = 3; this.durInput.value = 8;
+      updateControls();
+    });
+    document.getElementById('m4-preset-5').addEventListener('click', () => {
+      this.x0Input.value = -20; this.v0Input.value = 0; this.aInput.value = 4; this.durInput.value = 7;
+      updateControls();
+    });
+
+    document.getElementById('m4-play-btn').addEventListener('click', () => {
+      if (this.time >= this.dur) this.resetSim();
+      this.running = true;
+      this.lastTimestamp = performance.now();
+      this.loop();
+    });
+
+    document.getElementById('m4-pause-btn').addEventListener('click', () => {
+      this.running = false;
+    });
+
+    document.getElementById('m4-reset-btn').addEventListener('click', () => {
+      this.resetSim();
+    });
+
+    window.addEventListener('resize', () => {
+      this.resizeCanvas();
+      this.render();
+    });
+
+    this.resizeCanvas();
+    updateControls();
+  },
+
+  resizeCanvas() {
+    if (!this.canvas) return;
+    const rect = this.canvas.parentElement.getBoundingClientRect();
+    this.canvas.width = rect.width;
+    this.canvas.height = 200;
+  },
+
+  resetSim() {
+    this.running = false;
+    this.time = 0;
+    if (this.animId) cancelAnimationFrame(this.animId);
+    this.updateChartsCurve();
+    this.updateHudAndStatus();
+    this.render();
+  },
+
+  updateChartsCurve() {
+    const ptsX = [];
+    const ptsV = [];
+    const ptsA = [];
+    const steps = 60;
+    for (let i = 0; i <= steps; i++) {
+      const t = (i / steps) * this.dur;
+      const x = this.x0 + this.v0 * t + 0.5 * this.a * t * t;
+      const v = this.v0 + this.a * t;
+      ptsX.push({ x: t, y: x });
+      ptsV.push({ x: t, y: v });
+      ptsA.push({ x: t, y: this.a });
+    }
+
+    if (this.chartXt) {
+      this.chartXt.data.datasets[0].data = ptsX;
+      this.chartXt.data.datasets[1].data = [{ x: 0, y: this.x0 }];
+      this.chartXt.update('none');
+    }
+    if (this.chartVt) {
+      this.chartVt.data.datasets[0].data = ptsV;
+      this.chartVt.data.datasets[1].data = [{ x: 0, y: this.v0 }];
+      this.chartVt.update('none');
+    }
+    if (this.chartAt) {
+      this.chartAt.data.datasets[0].data = ptsA;
+      this.chartAt.data.datasets[1].data = [{ x: 0, y: this.a }];
+      this.chartAt.update('none');
+    }
+  },
+
+  updateChartPoints() {
+    const currV = this.v0 + this.a * this.time;
+    const currX = this.x0 + this.v0 * this.time + 0.5 * this.a * this.time * this.time;
+    if (this.chartXt) {
+      this.chartXt.data.datasets[1].data = [{ x: this.time, y: currX }];
+      this.chartXt.update('none');
+    }
+    if (this.chartVt) {
+      this.chartVt.data.datasets[1].data = [{ x: this.time, y: currV }];
+      this.chartVt.update('none');
+    }
+    if (this.chartAt) {
+      this.chartAt.data.datasets[1].data = [{ x: this.time, y: this.a }];
+      this.chartAt.update('none');
+    }
+  },
+
+  loop() {
+    if (!this.running) return;
+    const now = performance.now();
+    const dt = (now - this.lastTimestamp) / 1000;
+    this.lastTimestamp = now;
+
+    this.time += dt;
+    if (this.time >= this.dur) {
+      this.time = this.dur;
+      this.running = false;
+    }
+
+    this.updateHudAndStatus();
+    this.updateChartPoints();
+    this.render();
+
+    if (this.running) {
+      this.animId = requestAnimationFrame(() => this.loop());
+    }
+  },
+
+  updateHudAndStatus() {
+    const currV = this.v0 + this.a * this.time;
+    const currX = this.x0 + this.v0 * this.time + 0.5 * this.a * this.time * this.time;
+    const dx = currX - this.x0;
+
+    this.hudX.textContent = `${currX >= 0 ? '+' : ''}${currX.toFixed(1)} m`;
+    this.hudV.textContent = `${currV >= 0 ? '+' : ''}${currV.toFixed(1)} m/s`;
+    this.hudA.textContent = `${this.a >= 0 ? '+' : ''}${this.a.toFixed(1)} m/s²`;
+    this.hudT.textContent = `${this.time.toFixed(2)} s`;
+    this.hudDx.textContent = `${dx >= 0 ? '+' : ''}${dx.toFixed(1)} m`;
+
+    // Banner Status check
+    const speed = Math.abs(currV);
+    const sameSign = (currV * this.a > 0.05);
+    const oppSign = (currV * this.a < -0.05);
+
+    if (speed < 0.1) {
+      this.statusBanner.className = 'status-banner status-stopped';
+      this.statusText.textContent = '⏹️ PARADA INSTANTÁNEA: La velocidad se anula (v = 0). Momento de inversión de marcha.';
+    } else if (sameSign) {
+      this.statusBanner.className = 'status-banner status-speeding';
+      this.statusText.textContent = '🚀 ACELERANDO: Velocidad y Aceleración tienen el mismo signo. La rapidez aumenta.';
+    } else if (oppSign) {
+      this.statusBanner.className = 'status-banner status-slowing';
+      this.statusText.textContent = '⏳ FRENANDO: Velocidad y Aceleración tienen signos opuestos. La rapidez disminuye.';
+    } else {
+      this.statusBanner.className = 'status-banner';
+      this.statusText.textContent = '🔄 Movimiento Rectilíneo Uniforme';
+    }
+
+    // Direction reversal detection
+    if (this.a !== 0 && this.v0 !== 0) {
+      const tStop = -this.v0 / this.a;
+      if (tStop > 0 && tStop <= this.dur) {
+        const xStop = this.x0 + this.v0 * tStop + 0.5 * this.a * tStop * tStop;
+        this.reversalText.textContent = `🛑 Inversión en t = ${tStop.toFixed(2)}s (x = ${xStop.toFixed(1)}m)`;
+      } else {
+        this.reversalText.textContent = 'No invierte sentido en este intervalo';
+      }
+    } else {
+      this.reversalText.textContent = '';
+    }
+  },
+
+  toScreenX(worldX) {
+    const cx = this.canvas.width / 2;
+    const pixelsPerMeter = this.canvas.width / 160;
+    return cx + worldX * pixelsPerMeter;
+  },
+
+  render() {
+    const ctx = this.ctx;
+    const w = this.canvas.width;
+    const h = this.canvas.height;
+    ctx.clearRect(0, 0, w, h);
+
+    const axisY = 110;
+
+    // Road Track
+    ctx.fillStyle = '#0a1020';
+    ctx.fillRect(0, axisY - 25, w, 50);
+
+    ctx.strokeStyle = '#1e2d4a';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(0, axisY - 25);
+    ctx.lineTo(w, axisY - 25);
+    ctx.moveTo(0, axisY + 25);
+    ctx.lineTo(w, axisY + 25);
+    ctx.stroke();
+
+    // Coordinates
+    ctx.font = '10px Consolas, monospace';
+    ctx.textAlign = 'center';
+    for (let x = -80; x <= 80; x += 10) {
+      const sx = this.toScreenX(x);
+      if (sx < 10 || sx > w - 10) continue;
+
+      ctx.strokeStyle = x === 0 ? '#00bcd4' : '#334466';
+      ctx.lineWidth = x === 0 ? 3 : 1;
+      ctx.beginPath();
+      ctx.moveTo(sx, axisY + 25);
+      ctx.lineTo(sx, axisY + 33);
+      ctx.stroke();
+
+      ctx.fillStyle = x === 0 ? '#00bcd4' : '#8899bb';
+      ctx.fillText(`${x}m`, sx, axisY + 45);
+    }
+
+    // Vehicle
+    const currV = this.v0 + this.a * this.time;
+    const currX = this.x0 + this.v0 * this.time + 0.5 * this.a * this.time * this.time;
+    const sx = this.toScreenX(currX);
+
+    // Speed lines behind vehicle
+    if (Math.abs(currV) > 1) {
+      ctx.save();
+      ctx.strokeStyle = 'rgba(0, 188, 212, 0.3)';
+      ctx.lineWidth = 2;
+      const trailDir = -Math.sign(currV);
+      for (let i = 1; i <= 3; i++) {
+        ctx.beginPath();
+        ctx.moveTo(sx + trailDir * (25 + i * 10), axisY - 8 + i * 5);
+        ctx.lineTo(sx + trailDir * (15 + i * 6), axisY - 8 + i * 5);
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+
+    // Vehicle Body
+    ctx.save();
+    ctx.fillStyle = '#ff9800';
+    ctx.shadowColor = '#ff9800';
+    ctx.shadowBlur = 10;
+    ctx.beginPath();
+    ctx.roundRect(sx - 22, axisY - 14, 44, 28, 6);
+    ctx.fill();
+
+    // Cabin
+    ctx.fillStyle = '#05101f';
+    ctx.beginPath();
+    ctx.roundRect(sx - 10, axisY - 10, 20, 20, 3);
+    ctx.fill();
+    ctx.restore();
+
+    // 1. Velocity Arrow (Green)
+    const vArrowLen = currV * 3.5;
+    if (Math.abs(vArrowLen) > 3) {
+      Module1Demo.drawArrow(ctx, sx, axisY - 26, sx + vArrowLen, axisY - 26, '#4caf50', 3, false);
+      ctx.fillStyle = '#4caf50';
+      ctx.font = 'bold 10px Inter, sans-serif';
+      ctx.fillText(`v⃗ = ${currV >= 0 ? '+' : ''}${currV.toFixed(1)} m/s`, sx + vArrowLen / 2, axisY - 34);
+    }
+
+    // 2. Acceleration Arrow (Orange)
+    const aArrowLen = this.a * 8;
+    if (Math.abs(aArrowLen) > 3) {
+      Module1Demo.drawArrow(ctx, sx, axisY + 40, sx + aArrowLen, axisY + 40, '#ff9800', 3, false);
+      ctx.fillStyle = '#ff9800';
+      ctx.font = 'bold 10px Inter, sans-serif';
+      ctx.fillText(`a⃗ = ${this.a >= 0 ? '+' : ''}${this.a.toFixed(1)} m/s²`, sx + aArrowLen / 2, axisY + 54);
+    }
+  }
+};
+
+// ==========================================================================
+// MODULE V: INTERPRETACIÓN DE GRÁFICAS CINEMÁTICAS
+// ==========================================================================
+const Module5Graphs = {
+  isMRU: false,
+  x0: 0,
+  v0: 10,
+  a: -2.5,
+  tmax: 8,
+
+  // Activity Scenarios
+  scenarios: [
+    {
+      name: "Caso 1: MRU con velocidad positiva constante",
+      x0: -10, v0: 5, a: 0, tmax: 6,
+      answers: { q1: "movimiento", q2: "positivo", q3: "constante", q4: "cero", q5: "no" },
+      explanation: "El móvil se desplaza con velocidad constante positiva ($v = +5\\text{ m/s}$). En la gráfica $x-t$ se observa una recta ascendente. En $v-t$ una recta horizontal a la altura $+5$. Como la aceleración es nula ($a = 0$), la rapidez no cambia y nunca invierte su sentido."
+    },
+    {
+      name: "Caso 2: MRUV frenando hasta detenerse",
+      x0: 0, v0: 16, a: -4, tmax: 5,
+      answers: { q1: "movimiento", q2: "positivo", q3: "disminuyendo", q4: "negativa", q5: "si" },
+      explanation: "Inicialmente avanza hacia la derecha ($v_0 > 0$), pero con aceleración negativa ($a = -4\\text{ m/s}^2$). Signos opuestos indican frenado: la rapidez disminuye hasta detenerse en $t = 4\\text{ s}$ ($v = 0$), instante en el cual invierte su sentido de marcha hacia la izquierda."
+    },
+    {
+      name: "Caso 3: MRUV partiendo del reposo hacia la izquierda",
+      x0: 20, v0: 0, a: -3, tmax: 6,
+      answers: { q1: "movimiento", q2: "cero", q3: "aumentando", q4: "negativa", q5: "no" },
+      explanation: "En $t=0$ parte del reposo ($v_0 = 0$). Al poseer aceleración negativa constante, su velocidad se hace cada vez más negativa, incrementando continuamente su rapidez hacia la izquierda. Nunca retrocede hacia la derecha."
+    },
+    {
+      name: "Caso 4: Móvil en reposo permanente",
+      x0: 10, v0: 0, a: 0, tmax: 6,
+      answers: { q1: "reposo", q2: "cero", q3: "constante", q4: "cero", q5: "no" },
+      explanation: "La posición permanece fija en $x = 10\\text{ m}$ durante todo el intervalo. La velocidad y la aceleración son estrictamente cero. El cuerpo no experimenta ningún tipo de movimiento."
+    },
+    {
+      name: "Caso 5: MRUV con frenado, parada e inversión de sentido",
+      x0: -12, v0: -6, a: 3, tmax: 5,
+      answers: { q1: "movimiento", q2: "negativo", q3: "disminuyendo", q4: "positiva", q5: "si" },
+      explanation: "El móvil se mueve hacia la izquierda ($v_0 < 0$). Como la aceleración es positiva ($a = +3\\text{ m/s}^2$), los signos opuestos provocan que se frene hasta detenerse en $t = 2\\text{ s}$ ($v = 0$). A partir de ese momento, la velocidad se torna positiva y avanza hacia la derecha."
+    }
+  ],
+
+  init() {
+    // Mode toggles
+    const btnMruv = document.getElementById('m5-mode-mruv');
+    const btnMru = document.getElementById('m5-mode-mru');
+    const aGroup = document.getElementById('m5-a-group');
+
+    this.x0Input = document.getElementById('m5-x0');
+    this.v0Input = document.getElementById('m5-v0');
+    this.aInput = document.getElementById('m5-a');
+    this.tmaxInput = document.getElementById('m5-tmax');
+
+    this.x0Val = document.getElementById('m5-x0-val');
+    this.v0Val = document.getElementById('m5-v0-val');
+    this.aVal = document.getElementById('m5-a-val');
+    this.tmaxVal = document.getElementById('m5-tmax-val');
+
+    // Generator charts
+    this.chartXt = createLineChart('m5-chart-xt', 'x(t)', '#00bcd4', 'Tiempo (s)', 'Posición (m)', false);
+    this.chartVt = createLineChart('m5-chart-vt', 'v(t)', '#4caf50', 'Tiempo (s)', 'Velocidad (m/s)', false);
+    this.chartAt = createLineChart('m5-chart-at', 'a(t)', '#ff9800', 'Tiempo (s)', 'Aceleración (m/s²)', false);
+
+    // Activity charts
+    this.actXt = createLineChart('m5-act-xt', 'x(t)', '#00bcd4', 'Tiempo (s)', 'Posición (m)', false);
+    this.actVt = createLineChart('m5-act-vt', 'v(t)', '#4caf50', 'Tiempo (s)', 'Velocidad (m/s)', false);
+    this.actAt = createLineChart('m5-act-at', 'a(t)', '#ff9800', 'Tiempo (s)', 'Aceleración (m/s²)', false);
+
+    const updateGenerator = () => {
+      this.x0 = parseFloat(this.x0Input.value);
+      this.v0 = parseFloat(this.v0Input.value);
+      this.a = this.isMRU ? 0 : parseFloat(this.aInput.value);
+      this.tmax = parseFloat(this.tmaxInput.value);
+
+      this.x0Val.textContent = `${this.x0} m`;
+      this.v0Val.textContent = `${this.v0.toFixed(1)} m/s`;
+      this.aVal.textContent = `${this.a.toFixed(1)} m/s²`;
+      this.tmaxVal.textContent = `${this.tmax} s`;
+
+      this.renderGeneratorCharts();
+    };
+
+    btnMruv.addEventListener('click', () => {
+      this.isMRU = false;
+      btnMruv.classList.add('active');
+      btnMru.classList.remove('active');
+      aGroup.style.display = 'block';
+      updateGenerator();
+    });
+
+    btnMru.addEventListener('click', () => {
+      this.isMRU = true;
+      btnMru.classList.add('active');
+      btnMruv.classList.remove('active');
+      aGroup.style.display = 'none';
+      updateGenerator();
+    });
+
+    this.x0Input.addEventListener('input', updateGenerator);
+    this.v0Input.addEventListener('input', updateGenerator);
+    this.aInput.addEventListener('input', updateGenerator);
+    this.tmaxInput.addEventListener('input', updateGenerator);
+
+    updateGenerator();
+
+    // Activity setup
+    const scenarioSelect = document.getElementById('m5-act-scenario');
+    const checkBtn = document.getElementById('m5-check-btn');
+
+    scenarioSelect.addEventListener('change', () => {
+      this.loadActivityScenario(parseInt(scenarioSelect.value));
+    });
+
+    checkBtn.addEventListener('click', () => {
+      this.checkActivityAnswers(parseInt(scenarioSelect.value));
+    });
+
+    this.loadActivityScenario(0);
+  },
+
+  renderGeneratorCharts() {
+    const ptsX = [];
+    const ptsV = [];
+    const ptsA = [];
+    const steps = 50;
+
+    for (let i = 0; i <= steps; i++) {
+      const t = (i / steps) * this.tmax;
+      const x = this.x0 + this.v0 * t + 0.5 * this.a * t * t;
+      const v = this.v0 + this.a * t;
+      ptsX.push({ x: t, y: x });
+      ptsV.push({ x: t, y: v });
+      ptsA.push({ x: t, y: this.a });
+    }
+
+    if (this.chartXt) {
+      this.chartXt.data.datasets[0].data = ptsX;
+      this.chartXt.update('none');
+    }
+    if (this.chartVt) {
+      this.chartVt.data.datasets[0].data = ptsV;
+      this.chartVt.update('none');
+    }
+    if (this.chartAt) {
+      this.chartAt.data.datasets[0].data = ptsA;
+      this.chartAt.update('none');
+    }
+  },
+
+  loadActivityScenario(idx) {
+    const sc = this.scenarios[idx];
+    const ptsX = [];
+    const ptsV = [];
+    const ptsA = [];
+    const steps = 40;
+
+    for (let i = 0; i <= steps; i++) {
+      const t = (i / steps) * sc.tmax;
+      const x = sc.x0 + sc.v0 * t + 0.5 * sc.a * t * t;
+      const v = sc.v0 + sc.a * t;
+      ptsX.push({ x: t, y: x });
+      ptsV.push({ x: t, y: v });
+      ptsA.push({ x: t, y: sc.a });
+    }
+
+    if (this.actXt) {
+      this.actXt.data.datasets[0].data = ptsX;
+      this.actXt.update('none');
+    }
+    if (this.actVt) {
+      this.actVt.data.datasets[0].data = ptsV;
+      this.actVt.update('none');
+    }
+    if (this.actAt) {
+      this.actAt.data.datasets[0].data = ptsA;
+      this.actAt.update('none');
+    }
+
+    // Reset radios
+    for (let q = 1; q <= 5; q++) {
+      const radios = document.getElementsByName(`m5-q${q}`);
+      radios.forEach(r => r.checked = false);
+    }
+
+    document.getElementById('m5-feedback-summary').textContent = '';
+    document.getElementById('m5-feedback-box').style.display = 'none';
+  },
+
+  checkActivityAnswers(idx) {
+    const sc = this.scenarios[idx];
+    let correctCount = 0;
+
+    for (let q = 1; q <= 5; q++) {
+      const radios = document.getElementsByName(`m5-q${q}`);
+      let userAns = null;
+      radios.forEach(r => { if (r.checked) userAns = r.value; });
+
+      const correctAns = sc.answers[`q${q}`];
+      if (userAns === correctAns) {
+        correctCount++;
+      }
+    }
+
+    const summary = document.getElementById('m5-feedback-summary');
+    const feedbackBox = document.getElementById('m5-feedback-box');
+    const feedbackContent = document.getElementById('m5-feedback-content');
+
+    if (correctCount === 5) {
+      summary.innerHTML = `<span style="color:var(--green);">🎯 ¡Excelente! 5/5 respuestas correctas</span>`;
+    } else {
+      summary.innerHTML = `<span style="color:var(--orange);">Has acertado ${correctCount}/5 preguntas. Revisa la explicación:</span>`;
+    }
+
+    feedbackContent.innerHTML = sc.explanation;
+    feedbackBox.style.display = 'block';
+    renderMath(feedbackContent);
+  }
+};
+
+// ==========================================================================
+// MODULE VI: CAÍDA LIBRE Y LANZAMIENTO VERTICAL
+// ==========================================================================
+const Module6Gravity = {
+  y0: 45,
+  v0: 0,
+  g: 9.8,
+  time: 0,
+  running: false,
+  animId: null,
+  lastTimestamp: null,
+
+  init() {
+    this.canvas = document.getElementById('m6-canvas');
+    if (!this.canvas) return;
+    this.ctx = this.canvas.getContext('2d');
+
+    this.y0Input = document.getElementById('m6-y0');
+    this.v0Input = document.getElementById('m6-v0');
+    this.gInput = document.getElementById('m6-g');
+
+    this.y0Val = document.getElementById('m6-y0-val');
+    this.v0Val = document.getElementById('m6-v0-val');
+    this.gVal = document.getElementById('m6-g-val');
+
+    this.hudY = document.getElementById('m6-hud-y');
+    this.hudV = document.getElementById('m6-hud-v');
+    this.hudA = document.getElementById('m6-hud-a');
+    this.hudT = document.getElementById('m6-hud-t');
+    this.hudStats = document.getElementById('m6-hud-stats');
+
+    // Init charts
+    this.chartYt = createLineChart('m6-chart-yt', 'y(t)', '#00bcd4', 'Tiempo (s)', 'Altura y (m)', false);
+    this.chartVt = createLineChart('m6-chart-vt', 'v(t)', '#4caf50', 'Tiempo (s)', 'Velocidad vᵧ (m/s)', false);
+    this.chartAt = createLineChart('m6-chart-at', 'a(t)', '#ff9800', 'Tiempo (s)', 'Aceleración aᵧ (m/s²)', false);
+
+    const updateControls = () => {
+      this.y0 = parseFloat(this.y0Input.value);
+      this.v0 = parseFloat(this.v0Input.value);
+      this.g = parseFloat(this.gInput.value);
+
+      this.y0Val.textContent = `${this.y0.toFixed(1)} m`;
+      this.v0Val.textContent = `${this.v0.toFixed(1)} m/s`;
+      this.gVal.textContent = `${this.g.toFixed(2)} m/s²`;
+
+      this.resetSim();
+    };
+
+    this.y0Input.addEventListener('input', updateControls);
+    this.v0Input.addEventListener('input', updateControls);
+    this.gInput.addEventListener('input', updateControls);
+
+    // Modes
+    const btnFreefall = document.getElementById('m6-mode-freefall');
+    const btnLaunch = document.getElementById('m6-mode-launch');
+
+    btnFreefall.addEventListener('click', () => {
+      btnFreefall.classList.add('active');
+      btnLaunch.classList.remove('active');
+      this.v0Input.value = 0;
+      if (parseFloat(this.y0Input.value) === 0) this.y0Input.value = 45;
+      updateControls();
+    });
+
+    btnLaunch.addEventListener('click', () => {
+      btnLaunch.classList.add('active');
+      btnFreefall.classList.remove('active');
+      if (parseFloat(this.v0Input.value) <= 0) this.v0Input.value = 25;
+      updateControls();
+    });
+
+    // Gravity buttons
+    const btnEarth = document.getElementById('m6-g-earth');
+    const btnMoon = document.getElementById('m6-g-moon');
+    const btnJupiter = document.getElementById('m6-g-jupiter');
+
+    btnEarth.addEventListener('click', () => {
+      btnEarth.classList.add('active');
+      btnMoon.classList.remove('active');
+      btnJupiter.classList.remove('active');
+      this.gInput.value = 9.8;
+      updateControls();
+    });
+
+    btnMoon.addEventListener('click', () => {
+      btnMoon.classList.add('active');
+      btnEarth.classList.remove('active');
+      btnJupiter.classList.remove('active');
+      this.gInput.value = 1.62;
+      updateControls();
+    });
+
+    btnJupiter.addEventListener('click', () => {
+      btnJupiter.classList.add('active');
+      btnEarth.classList.remove('active');
+      btnMoon.classList.remove('active');
+      this.gInput.value = 24.79;
+      updateControls();
+    });
+
+    document.getElementById('m6-play-btn').addEventListener('click', () => {
+      const tFlight = this.calcFlightTime();
+      if (this.time >= tFlight) this.resetSim();
+      this.running = true;
+      this.lastTimestamp = performance.now();
+      this.loop();
+    });
+
+    document.getElementById('m6-pause-btn').addEventListener('click', () => {
+      this.running = false;
+    });
+
+    document.getElementById('m6-reset-btn').addEventListener('click', () => {
+      this.resetSim();
+    });
+
+    window.addEventListener('resize', () => {
+      this.resizeCanvas();
+      this.render();
+    });
+
+    this.resizeCanvas();
+    updateControls();
+  },
+
+  resizeCanvas() {
+    if (!this.canvas) return;
+    const rect = this.canvas.parentElement.getBoundingClientRect();
+    this.canvas.width = rect.width;
+    this.canvas.height = 380;
+  },
+
+  calcFlightTime() {
+    // y = y0 + v0*t - 0.5*g*t^2 = 0 => 0.5*g*t^2 - v0*t - y0 = 0
+    const A = 0.5 * this.g;
+    const B = -this.v0;
+    const C = -this.y0;
+    const disc = B * B - 4 * A * C;
+    if (disc < 0) return 10;
+    const t = (-B + Math.sqrt(disc)) / (2 * A);
+    return Math.max(0.1, t);
+  },
+
+  resetSim() {
+    this.running = false;
+    this.time = 0;
+    if (this.animId) cancelAnimationFrame(this.animId);
+    this.updateChartsCurve();
+    this.updateHud();
+    this.render();
+  },
+
+  updateChartsCurve() {
+    const tFlight = this.calcFlightTime();
+    const ptsY = [];
+    const ptsV = [];
+    const ptsA = [];
+    const steps = 50;
+
+    for (let i = 0; i <= steps; i++) {
+      const t = (i / steps) * tFlight;
+      const y = Math.max(0, this.y0 + this.v0 * t - 0.5 * this.g * t * t);
+      const v = this.v0 - this.g * t;
+      ptsY.push({ x: t, y: y });
+      ptsV.push({ x: t, y: v });
+      ptsA.push({ x: t, y: -this.g });
+    }
+
+    if (this.chartYt) {
+      this.chartYt.data.datasets[0].data = ptsY;
+      this.chartYt.data.datasets[1].data = [{ x: 0, y: this.y0 }];
+      this.chartYt.update('none');
+    }
+    if (this.chartVt) {
+      this.chartVt.data.datasets[0].data = ptsV;
+      this.chartVt.data.datasets[1].data = [{ x: 0, y: this.v0 }];
+      this.chartVt.update('none');
+    }
+    if (this.chartAt) {
+      this.chartAt.data.datasets[0].data = ptsA;
+      this.chartAt.data.datasets[1].data = [{ x: 0, y: -this.g }];
+      this.chartAt.update('none');
+    }
+  },
+
+  updateChartPoints() {
+    const currY = Math.max(0, this.y0 + this.v0 * this.time - 0.5 * this.g * this.time * this.time);
+    const currV = this.v0 - this.g * this.time;
+    if (this.chartYt) {
+      this.chartYt.data.datasets[1].data = [{ x: this.time, y: currY }];
+      this.chartYt.update('none');
+    }
+    if (this.chartVt) {
+      this.chartVt.data.datasets[1].data = [{ x: this.time, y: currV }];
+      this.chartVt.update('none');
+    }
+    if (this.chartAt) {
+      this.chartAt.data.datasets[1].data = [{ x: this.time, y: -this.g }];
+      this.chartAt.update('none');
+    }
+  },
+
+  loop() {
+    if (!this.running) return;
+    const now = performance.now();
+    const dt = (now - this.lastTimestamp) / 1000;
+    this.lastTimestamp = now;
+
+    this.time += dt;
+    const tFlight = this.calcFlightTime();
+
+    if (this.time >= tFlight) {
+      this.time = tFlight;
+      this.running = false;
+    }
+
+    this.updateHud();
+    this.updateChartPoints();
+    this.render();
+
+    if (this.running) {
+      this.animId = requestAnimationFrame(() => this.loop());
+    }
+  },
+
+  updateHud() {
+    const currY = Math.max(0, this.y0 + this.v0 * this.time - 0.5 * this.g * this.time * this.time);
+    const currV = this.v0 - this.g * this.time;
+    const tFlight = this.calcFlightTime();
+
+    // Max height calculation
+    let yMax = this.y0;
+    if (this.v0 > 0) {
+      yMax = this.y0 + (this.v0 * this.v0) / (2 * this.g);
+    }
+
+    this.hudY.textContent = `${currY.toFixed(1)} m`;
+    this.hudV.textContent = `${currV >= 0 ? '+' : ''}${currV.toFixed(1)} m/s`;
+    this.hudA.textContent = `-${this.g.toFixed(1)} m/s²`;
+    this.hudT.textContent = `${this.time.toFixed(2)} s`;
+    this.hudStats.textContent = `y_máx: ${yMax.toFixed(1)}m | t_v: ${tFlight.toFixed(2)}s`;
+  },
+
+  toScreenY(worldY) {
+    const h = this.canvas.height;
+    const groundY = h - 35;
+    const maxWorldY = 120;
+    const pixelsPerMeter = (groundY - 30) / maxWorldY;
+    return groundY - worldY * pixelsPerMeter;
+  },
+
+  render() {
+    const ctx = this.ctx;
+    const w = this.canvas.width;
+    const h = this.canvas.height;
+    ctx.clearRect(0, 0, w, h);
+
+    const groundY = h - 35;
+    const rulerX = 55;
+
+    // Ground platform
+    ctx.fillStyle = '#1e2d4a';
+    ctx.fillRect(0, groundY, w, 35);
+    ctx.fillStyle = '#4caf50';
+    ctx.fillRect(0, groundY, w, 4);
+
+    // Height ruler
+    ctx.strokeStyle = '#2b3f66';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(rulerX, 20);
+    ctx.lineTo(rulerX, groundY);
+    ctx.stroke();
+
+    ctx.font = '9px Consolas, monospace';
+    ctx.textAlign = 'right';
+    for (let y = 0; y <= 120; y += 20) {
+      const sy = this.toScreenY(y);
+      ctx.strokeStyle = y === 0 ? '#4caf50' : '#4a5d7e';
+      ctx.beginPath();
+      ctx.moveTo(rulerX - 6, sy);
+      ctx.lineTo(rulerX + 6, sy);
+      ctx.stroke();
+
+      ctx.fillStyle = y === 0 ? '#4caf50' : '#8899bb';
+      ctx.fillText(`${y}m`, rulerX - 10, sy + 3);
+    }
+
+    // Ball position
+    const currY = Math.max(0, this.y0 + this.v0 * this.time - 0.5 * this.g * this.time * this.time);
+    const currV = this.v0 - this.g * this.time;
+    const ballX = rulerX + 80;
+    const ballY = this.toScreenY(currY);
+
+    // Particle Trail
+    ctx.strokeStyle = 'rgba(0, 188, 212, 0.25)';
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath();
+    ctx.moveTo(ballX, this.toScreenY(this.y0));
+    ctx.lineTo(ballX, ballY);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Glowing Ball
+    ctx.save();
+    ctx.fillStyle = '#00bcd4';
+    ctx.shadowColor = '#00bcd4';
+    ctx.shadowBlur = 14;
+    ctx.beginPath();
+    ctx.arc(ballX, ballY, 14, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = '#ffffff';
+    ctx.beginPath();
+    ctx.arc(ballX, ballY, 5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+
+    // 1. Velocity Arrow (Green)
+    const vLen = -currV * 2.5; // negative because screen Y is inverted
+    if (Math.abs(vLen) > 3) {
+      Module1Demo.drawArrow(ctx, ballX + 22, ballY, ballX + 22, ballY + vLen, '#4caf50', 2.5, false);
+      ctx.fillStyle = '#4caf50';
+      ctx.font = 'bold 10px Inter, sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText(`v_y = ${currV >= 0 ? '+' : ''}${currV.toFixed(1)}`, ballX + 26, ballY + vLen / 2);
+    }
+
+    // 2. Gravity Arrow (Orange, pointing down)
+    const gLen = (this.g / 9.8) * 24;
+    Module1Demo.drawArrow(ctx, ballX - 22, ballY, ballX - 22, ballY + gLen, '#ff9800', 2.5, false);
+    ctx.fillStyle = '#ff9800';
+    ctx.font = 'bold 9px Inter, sans-serif';
+    ctx.textAlign = 'right';
+    ctx.fillText(`g = ${this.g.toFixed(1)}`, ballX - 26, ballY + gLen / 2);
+
+    // Apogee Callout
+    if (this.v0 > 0) {
+      const tStop = this.v0 / this.g;
+      if (Math.abs(this.time - tStop) < 0.15) {
+        ctx.fillStyle = '#ffeb3b';
+        ctx.font = 'bold 11px Inter, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('¡Apogeo! v = 0, a = -g', ballX, ballY - 24);
+      }
+    }
+  }
+};
+
+// ==========================================================================
+// MODULE VII: PROBLEMAS RESUELTOS (TOGGLE ACCORDIONS)
+// ==========================================================================
+function toggleSolution(panelId) {
+  const panel = document.getElementById(panelId);
+  const btn = document.getElementById(`btn-toggle-${panelId}`);
+  if (!panel) return;
+  const isOpen = panel.classList.contains('open');
+  if (isOpen) {
+    panel.classList.remove('open');
+    if (btn) btn.textContent = 'Ver Solución Paso a Paso ▾';
+  } else {
+    panel.classList.add('open');
+    if (btn) btn.textContent = 'Ocultar Solución ▴';
+    renderMath(panel);
+  }
+}
+
+// ==========================================================================
+// MODULE VIII: ERRORES CONCEPTUALES FRECUENTES
+// ==========================================================================
+const Module8Misconceptions = {
+  score: 0,
+  answered: 0,
+
+  items: [
+    {
+      statement: "1. Distancia y desplazamiento significan exactamente lo mismo.",
+      correctIsVal: false,
+      explanation: "FALSO — La distancia es un escalar acumulativo siempre positivo que mide la longitud total del camino recorrido. El desplazamiento es una magnitud vectorial dada por $\Delta x = x_f - x_i$, que solo conecta el estado inicial con el final y puede ser positivo, negativo o nulo."
+    },
+    {
+      statement: "2. Una velocidad negativa siempre significa que el móvil está frenando.",
+      correctIsVal: false,
+      explanation: "FALSO — El signo de la velocidad indica únicamente el sentido del movimiento sobre el eje de referencia. Un móvil con $v = -20\\text{ m/s}$ y $a = -5\\text{ m/s}^2$ está acelerando (su rapidez $|v|$ aumenta hacia la izquierda)."
+    },
+    {
+      statement: "3. Si la velocidad de una partícula es cero en un instante, su aceleración también debe ser cero en ese instante.",
+      correctIsVal: false,
+      explanation: "FALSO — En el punto más alto del lanzamiento vertical, la velocidad es instantáneamente nula ($v = 0$), pero la aceleración gravitatoria sigue actuando ininterrumpidamente ($a = -9.8\\text{ m/s}^2$)."
+    },
+    {
+      statement: "4. Si la aceleración es negativa, la rapidez siempre disminuye.",
+      correctIsVal: false,
+      explanation: "FALSO — La rapidez solo disminuye cuando la aceleración y la velocidad tienen signos contrarios. Si ambas son negativas ($v < 0$ y $a < 0$), el cuerpo incrementa continuamente su rapidez en sentido negativo."
+    },
+    {
+      statement: "5. En el Movimiento Rectilíneo Uniforme (MRU) la aceleración es estrictamente cero.",
+      correctIsVal: true,
+      explanation: "VERDADERO — Por definición, en el MRU el vector velocidad es invariante en el tiempo (magnitud y dirección constantes), lo que exige que $a = \\Delta v / \\Delta t = 0$ en todo instante."
+    },
+    {
+      statement: "6. En la caída libre ideal (sin aire), todos los objetos experimentan la misma aceleración gravitatoria independientemente de su masa.",
+      correctIsVal: true,
+      explanation: "VERDADERO — Como demostró Galileo Galilei, en ausencia de resistencia aerodinámica, una pluma y una bola de plomo caen con idéntica aceleración gravitatoria $g$ en el mismo lugar geográfico."
+    },
+    {
+      statement: "7. En el punto más alto de un lanzamiento vertical, la aceleración gravitatoria se anula por un instante.",
+      correctIsVal: false,
+      explanation: "FALSO — La aceleración de la gravedad terrestre es producida por la masa del planeta y jamás se apaga: vale permanentemente $a_y = -g \\approx -9.8\\text{ m/s}^2$. La magnitud que se hace cero en la cúspide es la velocidad, no la aceleración."
+    },
+    {
+      statement: "8. El área con signo bajo la gráfica velocidad-tiempo ($v-t$) representa el desplazamiento neto.",
+      correctIsVal: true,
+      explanation: "VERDADERO — Geométricamente, el producto de los ejes $(m/s) \\times s = m$. Las áreas sobre el eje temporal suman desplazamiento positivo hacia adelante y las áreas bajo el eje restan desplazamiento hacia atrás."
+    },
+    {
+      statement: "9. La pendiente de una recta secante entre dos puntos de una gráfica $x-t$ representa la velocidad media.",
+      correctIsVal: true,
+      explanation: "VERDADERO — La pendiente de la secante es $\\frac{\\Delta x}{\\Delta t} = \\frac{x_2 - x_1}{t_2 - t_1}$, que corresponde exactamente a la definición matemática de velocidad media."
+    },
+    {
+      statement: "10. La pendiente de la gráfica velocidad-tiempo ($v-t$) en el MRUV representa la aceleración constante.",
+      correctIsVal: true,
+      explanation: "VERDADERO — En el MRUV la gráfica $v-t$ es una línea recta con pendiente uniforme $m = \\frac{\\Delta v}{\\Delta t} = a$."
+    }
+  ],
+
+  init() {
+    this.container = document.getElementById('m8-cards-container');
+    this.scoreEl = document.getElementById('m8-score');
+    if (!this.container) return;
+
+    document.getElementById('m8-reset-btn').addEventListener('click', () => {
+      this.reset();
+    });
+
+    this.renderCards();
+  },
+
+  reset() {
+    this.score = 0;
+    this.answered = 0;
+    this.scoreEl.textContent = '0';
+    this.renderCards();
+  },
+
+  renderCards() {
+    this.container.innerHTML = '';
+    this.items.forEach((item, idx) => {
+      const card = document.createElement('div');
+      card.className = 'miscon-card';
+      card.id = `miscon-card-${idx}`;
+
+      card.innerHTML = `
+        <div class="miscon-text">${item.statement}</div>
+        <div class="miscon-actions">
+          <button class="miscon-btn" id="m8-btn-t-${idx}">Verdadero</button>
+          <button class="miscon-btn" id="m8-btn-f-${idx}">Falso</button>
+        </div>
+        <div class="miscon-feedback" id="m8-feed-${idx}"></div>
+      `;
+
+      this.container.appendChild(card);
+
+      const btnT = document.getElementById(`m8-btn-t-${idx}`);
+      const btnF = document.getElementById(`m8-btn-f-${idx}`);
+
+      btnT.addEventListener('click', () => this.handleAnswer(idx, true));
+      btnF.addEventListener('click', () => this.handleAnswer(idx, false));
+    });
+
+    renderMath(this.container);
+  },
+
+  handleAnswer(idx, userPick) {
+    const item = this.items[idx];
+    const card = document.getElementById(`miscon-card-${idx}`);
+    const btnT = document.getElementById(`m8-btn-t-${idx}`);
+    const btnF = document.getElementById(`m8-btn-f-${idx}`);
+    const feed = document.getElementById(`m8-feed-${idx}`);
+
+    btnT.disabled = true;
+    btnF.disabled = true;
+
+    const isCorrect = (userPick === item.correctIsVal);
+    if (isCorrect) {
+      this.score++;
+      card.classList.add('correct');
+      feed.style.background = 'rgba(76, 175, 80, 0.15)';
+      feed.style.color = '#a5d6a7';
+      feed.innerHTML = `<strong>¡CORRECTO!</strong> ${item.explanation}`;
+    } else {
+      card.classList.add('incorrect');
+      feed.style.background = 'rgba(244, 67, 54, 0.15)';
+      feed.style.color = '#ef9a9a';
+      feed.innerHTML = `<strong>INCORRECTO.</strong> ${item.explanation}`;
+    }
+
+    feed.classList.add('show');
+    this.answered++;
+    this.scoreEl.textContent = this.score;
+    renderMath(feed);
+  }
+};
+
+// ==========================================================================
+// MODULE IX: QUIZ INTERACTIVO DE EVALUACIÓN
+// ==========================================================================
+const Module9Quiz = {
+  currentIdx: 0,
+  score: 0,
+  selectedOption: null,
+  isAnswerChecked: false,
+
+  questions: [
+    {
+      level: "Básico",
+      q: "¿Cuál es la unidad del desplazamiento en el Sistema Internacional (SI)?",
+      options: ["m/s", "m/s²", "m", "s"],
+      correct: 2,
+      explanation: "El desplazamiento es una magnitud vectorial que mide una diferencia espacial de posiciones ($\\Delta x = x_f - x_i$). Por tanto, su unidad oficial en el SI es el **metro (m)**."
+    },
+    {
+      level: "Básico",
+      q: "Un objeto se mueve 5 m hacia la derecha y luego 3 m hacia la izquierda. ¿Cuál es su desplazamiento neto?",
+      options: ["8 m", "3 m", "2 m", "-2 m"],
+      correct: 2,
+      explanation: "Adoptando la derecha como sentido positivo: $\\Delta x = (+5\\text{ m}) + (-3\\text{ m}) = +2\\text{ m}$. La distancia total recorrida fue $8\\text{ m}$, pero el desplazamiento neto es $2\\text{ m}$."
+    },
+    {
+      level: "Básico",
+      q: "La rapidez media de un móvil es siempre:",
+      options: [
+        "Igual al módulo de la velocidad media en cualquier situación",
+        "Negativa cuando existe un retroceso",
+        "Una magnitud escalar no negativa (≥ 0)",
+        "Igual a la aceleración por el tiempo"
+      ],
+      correct: 2,
+      explanation: "La rapidez media es el cociente escalar $v_{\\text{rap,med}} = d_{\\text{total}} / \\Delta t$. Al ser la distancia una suma de longitudes positivas ($d \\ge 0$), la rapidez media es estrictamente **no negativa**."
+    },
+    {
+      level: "Básico",
+      q: "En el Movimiento Rectilíneo Uniforme (MRU), ¿qué valor posee la aceleración?",
+      options: [
+        "Constante pero distinta de cero",
+        "Variable linealmente",
+        "Estrictamente cero",
+        "Igual al valor de la velocidad"
+      ],
+      correct: 2,
+      explanation: "En el MRU, la velocidad es constante en magnitud y dirección. Dado que la aceleración mide el cambio de velocidad ($a = \\Delta v / \\Delta t$), su valor es **rigurosamente cero**."
+    },
+    {
+      level: "Básico",
+      q: "¿Cuál de las siguientes magnitudes físicas es de naturaleza vectorial?",
+      options: [
+        "Distancia recorrida",
+        "Rapidez media",
+        "Tiempo transcurrido",
+        "Velocidad media"
+      ],
+      correct: 3,
+      explanation: "La **velocidad media** es un vector: posee módulo, dirección y sentido ($\\vec{v}_{\\text{med}} = \\Delta \\vec{x} / \\Delta t$). La distancia, la rapidez y el tiempo son magnitudes escalares."
+    },
+    {
+      level: "Intermedio",
+      q: "Un móvil en MRU parte de la posición x₀ = 3 m con una velocidad constante v = 4 m/s. ¿Cuál será su posición al cabo de 5 s?",
+      options: ["15 m", "23 m", "20 m", "7 m"],
+      correct: 1,
+      explanation: "Aplicando la ecuación horaria de posición del MRU: $x(t) = x_0 + v \\cdot t = 3 + 4(5) = 3 + 20 = **23\\text{ m}**$."
+    },
+    {
+      level: "Intermedio",
+      q: "En un MRUV con v₀ = 6 m/s y a = -2 m/s², ¿cuál es la velocidad instantánea a los 3 s?",
+      options: ["12 m/s", "-6 m/s", "6 m/s", "0 m/s"],
+      correct: 3,
+      explanation: "Ecuación de velocidad en MRUV: $v(t) = v_0 + a \\cdot t = 6 + (-2)(3) = 6 - 6 = **0\\text{ m/s}**$. El móvil se detiene momentáneamente a los 3 segundos."
+    },
+    {
+      level: "Intermedio",
+      q: "La gráfica velocidad vs tiempo (v-t) de un MRU se representa como:",
+      options: [
+        "Una parábola",
+        "Una línea recta horizontal paralela al eje del tiempo",
+        "Una recta con pendiente positiva que pasa por el origen",
+        "Una curva asintótica"
+      ],
+      correct: 1,
+      explanation: "Dado que en el MRU la velocidad mantiene un valor constante e idéntico para cualquier instante $t$, su gráfica $v-t$ es una **recta horizontal** a la altura del valor $v$."
+    },
+    {
+      level: "Intermedio",
+      q: "La pendiente de la recta en una gráfica velocidad-tiempo (v-t) en el MRUV representa:",
+      options: [
+        "La posición final",
+        "El desplazamiento neto",
+        "La velocidad media",
+        "La aceleración del móvil"
+      ],
+      correct: 3,
+      explanation: "La pendiente geométrica es la razón entre el eje vertical y el eje horizontal: $\\text{Pendiente} = \\frac{\\Delta v}{\\Delta t} = **a**$ (la **aceleración**)."
+    },
+    {
+      level: "Intermedio",
+      q: "En una gráfica velocidad vs tiempo (v-t), el área geométrica comprendida bajo la curva representa:",
+      options: [
+        "La aceleración instantánea",
+        "La rapidez promedio",
+        "El desplazamiento neto (Δx)",
+        "La energía mecánica"
+      ],
+      correct: 2,
+      explanation: "El producto de las dimensiones de los ejes es: $[v] \\times [t] = (\\text{m/s}) \\times \\text{s} = \\text{m}$. Por ende, el área con signo bajo la curva $v-t$ representa directamente el **desplazamiento neto** ($\\Delta x$)."
+    },
+    {
+      level: "Intermedio",
+      q: "Un automóvil arranca con v₀ = 10 m/s y una aceleración constante a = 2 m/s². ¿Cuál será su velocidad transcurridos 4 s?",
+      options: ["12 m/s", "18 m/s", "20 m/s", "8 m/s"],
+      correct: 1,
+      explanation: "$v = v_0 + a \\cdot t = 10 + 2(4) = 10 + 8 = **18\\text{ m/s}**$."
+    },
+    {
+      level: "Avanzado",
+      q: "Un vehículo frena con una desaceleración de a = -3 m/s² desde una rapidez inicial v₀ = 15 m/s. ¿En cuánto tiempo se detiene totalmente?",
+      options: ["3 s", "5 s", "45 s", "10 s"],
+      correct: 1,
+      explanation: "Al detenerse, $v = 0$. Despejando el tiempo de frenado: $t = \\frac{v - v_0}{a} = \\frac{0 - 15}{-3} = **5\\text{ s}**$."
+    },
+    {
+      level: "Avanzado",
+      q: "Se deja caer un objeto libremente desde el reposo. ¿Cuál es su rapidez al cabo de 3 s? (Considera g = 9.8 m/s²)",
+      options: ["9.8 m/s", "29.4 m/s", "44.1 m/s", "3.0 m/s"],
+      correct: 1,
+      explanation: "En caída libre partiendo del reposo ($v_0 = 0$): $|v_y| = g \\cdot t = (9.8\\text{ m/s}^2)(3\\text{ s}) = **29.4\\text{ m/s}**$."
+    },
+    {
+      level: "Avanzado",
+      q: "En el punto más alto alcanzado por un objeto en un lanzamiento vertical hacia arriba:",
+      options: [
+        "La velocidad y la aceleración se anulan simultáneamente",
+        "La velocidad es máxima y la aceleración es nula",
+        "La velocidad instantánea es cero y la aceleración es -g",
+        "La aceleración apunta hacia arriba impulsando el retorno"
+      ],
+      correct: 2,
+      explanation: "En la cúspide, el cuerpo deja de subir para comenzar a bajar ($v = 0$), pero la atracción gravitatoria de la Tierra no cesa en ningún momento: la aceleración sigue valiendo exactamente **-g**."
+    },
+    {
+      level: "Avanzado",
+      q: "Una partícula tiene velocidad v = -5 m/s y aceleración a = -2 m/s². ¿Qué le ocurre a su rapidez?",
+      options: [
+        "Disminuye",
+        "Permanece constante",
+        "Aumenta",
+        "Se hace cero instantáneamente"
+      ],
+      correct: 2,
+      explanation: "La rapidez es el módulo de la velocidad ($|v|$). Como tanto $v$ como $a$ tienen el mismo signo (ambos negativos), la aceleración empuja al móvil en la misma dirección de su marcha, por lo que **la rapidez aumenta**."
+    }
+  ],
+
+  init() {
+    this.qNum = document.getElementById('quiz-q-num');
+    this.qLevel = document.getElementById('quiz-q-level');
+    this.qScore = document.getElementById('quiz-q-score');
+    this.progressBar = document.getElementById('quiz-progress');
+
+    this.title = document.getElementById('quiz-title');
+    this.optionsBox = document.getElementById('quiz-options');
+    this.feedbackBox = document.getElementById('quiz-feedback');
+
+    this.checkBtn = document.getElementById('quiz-check-btn');
+    this.nextBtn = document.getElementById('quiz-next-btn');
+
+    this.questionBox = document.getElementById('quiz-question-box');
+    this.resultBox = document.getElementById('quiz-result-box');
+    this.retryBtn = document.getElementById('quiz-retry-btn');
+
+    this.checkBtn.addEventListener('click', () => this.checkAnswer());
+    this.nextBtn.addEventListener('click', () => this.nextQuestion());
+    this.retryBtn.addEventListener('click', () => this.restartQuiz());
+
+    this.loadQuestion();
+  },
+
+  loadQuestion() {
+    this.selectedOption = null;
+    this.isAnswerChecked = false;
+
+    const qData = this.questions[this.currentIdx];
+    this.qNum.textContent = `Pregunta ${this.currentIdx + 1} de ${this.questions.length}`;
+    this.qLevel.textContent = `Nivel ${qData.level}`;
+    this.qScore.textContent = `Puntaje: ${this.score}`;
+
+    const pct = ((this.currentIdx + 1) / this.questions.length) * 100;
+    this.progressBar.style.width = `${pct}%`;
+
+    this.title.textContent = qData.q;
+    this.optionsBox.innerHTML = '';
+    this.feedbackBox.className = 'quiz-feedback';
+    this.feedbackBox.style.display = 'none';
+
+    this.checkBtn.style.display = 'inline-flex';
+    this.nextBtn.style.display = 'none';
+
+    qData.options.forEach((optText, optIdx) => {
+      const optEl = document.createElement('div');
+      optEl.className = 'quiz-option';
+      optEl.id = `q-opt-${optIdx}`;
+      const letters = ['A', 'B', 'C', 'D'];
+      optEl.innerHTML = `
+        <span style="font-weight:700; color:var(--cyan);">${letters[optIdx]})</span>
+        <span>${optText}</span>
+      `;
+
+      optEl.addEventListener('click', () => {
+        if (this.isAnswerChecked) return;
+        this.selectedOption = optIdx;
+        document.querySelectorAll('.quiz-option').forEach(el => el.classList.remove('selected'));
+        optEl.classList.add('selected');
+      });
+
+      this.optionsBox.appendChild(optEl);
+    });
+
+    renderMath(this.questionBox);
+  },
+
+  checkAnswer() {
+    if (this.selectedOption === null) {
+      alert('Por favor, selecciona una opción antes de comprobar.');
+      return;
+    }
+
+    this.isAnswerChecked = true;
+    const qData = this.questions[this.currentIdx];
+    const isCorrect = (this.selectedOption === qData.correct);
+
+    const optEls = document.querySelectorAll('.quiz-option');
+    optEls.forEach((el, idx) => {
+      if (idx === qData.correct) {
+        el.classList.add('correct');
+      } else if (idx === this.selectedOption) {
+        el.classList.add('incorrect');
+      }
+    });
+
+    this.feedbackBox.style.display = 'block';
+    if (isCorrect) {
+      this.score++;
+      this.feedbackBox.style.background = 'rgba(76, 175, 80, 0.15)';
+      this.feedbackBox.style.border = '1px solid rgba(76, 175, 80, 0.4)';
+      this.feedbackBox.style.color = '#a5d6a7';
+      this.feedbackBox.innerHTML = `<strong>¡Excelente! Respuesta correcta.</strong><br>${qData.explanation}`;
+    } else {
+      this.feedbackBox.style.background = 'rgba(244, 67, 54, 0.15)';
+      this.feedbackBox.style.border = '1px solid rgba(244, 67, 54, 0.4)';
+      this.feedbackBox.style.color = '#ef9a9a';
+      this.feedbackBox.innerHTML = `<strong>Respuesta incorrecta.</strong><br>${qData.explanation}`;
+    }
+
+    this.qScore.textContent = `Puntaje: ${this.score}`;
+    this.checkBtn.style.display = 'none';
+    this.nextBtn.style.display = 'inline-flex';
+    renderMath(this.feedbackBox);
+  },
+
+  nextQuestion() {
+    if (this.currentIdx < this.questions.length - 1) {
+      this.currentIdx++;
+      this.loadQuestion();
+    } else {
+      this.showFinalResults();
+    }
+  },
+
+  showFinalResults() {
+    this.questionBox.style.display = 'none';
+    this.resultBox.style.display = 'block';
+
+    const pct = Math.round((this.score / this.questions.length) * 100);
+    document.getElementById('quiz-result-score').textContent = `${this.score} / ${this.questions.length}`;
+    document.getElementById('quiz-result-pct').textContent = `${pct}%`;
+
+    const emojiEl = document.getElementById('quiz-result-emoji');
+    const titleEl = document.getElementById('quiz-result-title');
+    const descEl = document.getElementById('quiz-result-desc');
+
+    if (pct === 100) {
+      emojiEl.textContent = '🏆';
+      titleEl.textContent = '¡Maestría Absoluta en Cinemática!';
+      descEl.textContent = 'Has respondido con precisión científica todas las preguntas. ¡Dominio preuniversitario total!';
+    } else if (pct >= 80) {
+      emojiEl.textContent = '🌟';
+      titleEl.textContent = '¡Excelente Nivel Académico!';
+      descEl.textContent = 'Posees una comprensión sólida de los vectores, el MRU, el MRUV y la caída libre.';
+    } else if (pct >= 60) {
+      emojiEl.textContent = '👍';
+      titleEl.textContent = '¡Buen Trabajo!';
+      descEl.textContent = 'Has aprobado el examen. Te recomendamos repasar las gráficas y la convención de signos.';
+    } else {
+      emojiEl.textContent = '📚';
+      titleEl.textContent = 'Refuerzo Conceptual Recomendado';
+      descEl.textContent = 'Revisa los módulos de fundamentos teóricos y ejemplos resueltos paso a paso.';
+    }
+  },
+
+  restartQuiz() {
+    this.currentIdx = 0;
+    this.score = 0;
+    this.resultBox.style.display = 'none';
+    this.questionBox.style.display = 'block';
+    this.loadQuestion();
+  }
+};
+
+// ==========================================================================
+// APPLICATION BOOTSTRAP
+// ==========================================================================
+window.addEventListener('DOMContentLoaded', () => {
+  initChartDefaults();
+  initNavigation();
+
+  // Initialize all interactive sub-modules
+  Module1Demo.init();
+  Module2Sim.init();
+  Module3MRU.init();
+  Module4MRUV.init();
+  Module5Graphs.init();
+  Module6Gravity.init();
+  Module8Misconceptions.init();
+  Module9Quiz.init();
+
+  // Initial KaTeX render
+  renderMath(document.body);
+});
+
+  </script>
+</body>
+</html>
